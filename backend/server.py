@@ -98,6 +98,15 @@ class WheelSpin(BaseModel):
 class SpinRequest(BaseModel):
     site_username: str
 
+class SpinPreviewResponse(BaseModel):
+    spin: WheelSpin
+    prize: Prize
+    site: Site
+
+class ConfirmSpinRequest(BaseModel):
+    spin_id: str
+    site_username: str
+
 class SpinResponse(BaseModel):
     spin: WheelSpin
     prize: Prize
