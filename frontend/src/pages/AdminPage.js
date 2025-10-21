@@ -109,12 +109,12 @@ const AdminPage = ({ user, logout }) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      await axios.post(`${API}/admin/sites`, { name: siteName }, {
+      await axios.post(`${API}/admin/sites`, siteForm, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Site eklendi!");
       setShowSiteModal(false);
-      setSiteName("");
+      setSiteForm({ name: "", logo_url: "", welcome_bonus: "" });
       fetchData();
     } catch (error) {
       toast.error("Site eklenemedi");
