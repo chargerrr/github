@@ -365,6 +365,53 @@ const AdminPage = ({ user, logout }) => {
                     </Button>
                   </CardTitle>
                 </CardHeader>
+                <CardContent className="text-white space-y-2">
+                  {site.logo_url && (
+                    <div className="flex justify-center mb-2">
+                      <img src={site.logo_url} alt={site.name} className="max-h-12 object-contain" />
+                    </div>
+                  )}
+                  {site.welcome_bonus && (
+                    <div className="bg-yellow-400/20 px-3 py-2 rounded text-center">
+                      <p className="text-yellow-400 font-semibold text-sm">{site.welcome_bonus}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* Rules Tab */}
+        <TabsContent value="rules" data-testid="rules-content">
+          <div className="mb-4">
+            <Button
+              data-testid="add-rule-btn"
+              onClick={() => setShowRuleModal(true)}
+              className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
+            >
+              <Plus className="mr-2" size={18} /> Yeni Kural Ekle
+            </Button>
+          </div>
+          <div className="grid gap-4">
+            {rules.map((rule, index) => (
+              <Card key={rule.id} className="bg-gray-800/80 border-yellow-400/30" data-testid={`rule-card-${index}`}>
+                <CardHeader>
+                  <CardTitle className="text-yellow-400 flex justify-between items-center">
+                    <span>#{rule.order} - {rule.title}</span>
+                    <Button
+                      data-testid={`delete-rule-${index}`}
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDeleteRule(rule.id)}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white">
+                  <p>{rule.description}</p>
+                </CardContent>
               </Card>
             ))}
           </div>
