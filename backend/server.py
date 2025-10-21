@@ -63,10 +63,14 @@ class Site(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
+    logo_url: Optional[str] = None
+    welcome_bonus: Optional[str] = None  # "500 TL Deneme Bonusu"
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class SiteCreate(BaseModel):
     name: str
+    logo_url: Optional[str] = None
+    welcome_bonus: Optional[str] = None
 
 class Prize(BaseModel):
     model_config = ConfigDict(extra="ignore")
