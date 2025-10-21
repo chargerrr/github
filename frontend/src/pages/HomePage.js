@@ -38,6 +38,7 @@ const HomePage = ({ user, setUser, logout }) => {
   useEffect(() => {
     fetchPrizes();
     fetchSites();
+    fetchRules();
     if (user) {
       fetchMySpins();
     }
@@ -58,6 +59,15 @@ const HomePage = ({ user, setUser, logout }) => {
       setSites(response.data);
     } catch (error) {
       console.error("Error fetching sites:", error);
+    }
+  };
+
+  const fetchRules = async () => {
+    try {
+      const response = await axios.get(`${API}/rules`);
+      setRules(response.data);
+    } catch (error) {
+      console.error("Error fetching rules:", error);
     }
   };
 
