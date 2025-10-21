@@ -461,7 +461,7 @@ const AdminPage = ({ user, logout }) => {
                   <SelectValue placeholder="Tüm kullanıcılar" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 text-white">
-                  <SelectItem value="" data-testid="all-users-option">Tüm Kullanıcılar</SelectItem>
+                  <SelectItem value="all-users" data-testid="all-users-option">Tüm Kullanıcılar</SelectItem>
                   {allUsers.map((u) => (
                     <SelectItem key={u.id} value={u.id} data-testid={`user-option-${u.id}`}>
                       {u.name} {u.surname} ({u.email})
