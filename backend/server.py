@@ -72,6 +72,19 @@ class SiteCreate(BaseModel):
     logo_url: Optional[str] = None
     welcome_bonus: Optional[str] = None
 
+class Rule(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str
+    order: int = 0
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class RuleCreate(BaseModel):
+    title: str
+    description: str
+    order: int = 0
+
 class Prize(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
