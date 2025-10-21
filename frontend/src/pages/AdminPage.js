@@ -32,7 +32,7 @@ const AdminPage = ({ user, logout }) => {
 
   const [siteName, setSiteName] = useState("");
   const [extraSpinForm, setExtraSpinForm] = useState({
-    user_id: "",
+    user_id: "all-users",
     spins: 1,
   });
 
