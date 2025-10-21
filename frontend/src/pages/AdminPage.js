@@ -141,14 +141,14 @@ const AdminPage = ({ user, logout }) => {
       await axios.post(
         `${API}/admin/extra-spins`,
         {
-          user_id: extraSpinForm.user_id || null,
+          user_id: extraSpinForm.user_id === "all-users" ? null : extraSpinForm.user_id,
           spins: parseInt(extraSpinForm.spins),
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Ekstra çark hakları tanımlandı!");
       setShowExtraSpinModal(false);
-      setExtraSpinForm({ user_id: "", spins: 1 });
+      setExtraSpinForm({ user_id: "all-users", spins: 1 });
       fetchData();
     } catch (error) {
       toast.error("İşlem başarısız");
