@@ -18,8 +18,10 @@ const AdminPage = ({ user, logout }) => {
   const [sites, setSites] = useState([]);
   const [spins, setSpins] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  const [rules, setRules] = useState([]);
   const [showPrizeModal, setShowPrizeModal] = useState(false);
   const [showSiteModal, setShowSiteModal] = useState(false);
+  const [showRuleModal, setShowRuleModal] = useState(false);
   const [showExtraSpinModal, setShowExtraSpinModal] = useState(false);
 
   const [prizeForm, setPrizeForm] = useState({
@@ -30,7 +32,18 @@ const AdminPage = ({ user, logout }) => {
     weight: 1,
   });
 
-  const [siteName, setSiteName] = useState("");
+  const [siteForm, setSiteForm] = useState({
+    name: "",
+    logo_url: "",
+    welcome_bonus: "",
+  });
+
+  const [ruleForm, setRuleForm] = useState({
+    title: "",
+    description: "",
+    order: 0,
+  });
+
   const [extraSpinForm, setExtraSpinForm] = useState({
     user_id: "all-users",
     spins: 1,
