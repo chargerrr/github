@@ -112,21 +112,12 @@ const HomePage = ({ user, setUser, logout }) => {
     }
   };
 
-  const handleSpin = () => {
+  const handleSpin = async () => {
     if (!user) {
       setShowAuthModal(true);
       return;
     }
-    setShowSiteModal(true);
-  };
 
-  const executeSpin = async () => {
-    if (!siteUsername.trim()) {
-      toast.error("Lütfen kullanıcı adınızı girin");
-      return;
-    }
-
-    setShowSiteModal(false);
     setSpinning(true);
     playSpinSound();
 
@@ -139,21 +130,18 @@ const HomePage = ({ user, setUser, logout }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${API}/wheel/spin`,
-        { site_username: siteUsername },
+        `${API}/wheel/spin-preview`,
+        {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setTimeout(async () => {
         setWonPrize(response.data);
-        setShowWinModal(true);
         setSpinning(false);
         createParticles();
-        setSiteUsername("");
-        fetchMySpins();
+        setShowSiteModal(true);
         
         // Refresh user data to update spin counts
-        const token = localStorage.getItem("token");
         try {
           const userResponse = await axios.get(`${API}/auth/me`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -166,6 +154,32 @@ const HomePage = ({ user, setUser, logout }) => {
     } catch (error) {
       setSpinning(false);
       toast.error(error.response?.data?.detail || "Çark çevrilemedi");
+    }
+  };
+
+  const submitSiteUsername = async () => {
+    if (!siteUsername.trim()) {
+      toast.error("Lütfen kullanıcı adınızı girin");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `${API}/wheel/confirm-spin`,
+        { 
+          spin_id: wonPrize.spin.id,
+          site_username: siteUsername 
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setShowSiteModal(false);
+      setShowWinModal(true);
+      setSiteUsername("");
+      fetchMySpins();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Bilgiler kaydedilemedi");
     }
   };
 
