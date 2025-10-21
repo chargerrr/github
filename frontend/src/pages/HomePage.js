@@ -412,52 +412,53 @@ const HomePage = ({ user, setUser, logout }) => {
         </DialogContent>
       </Dialog>
 
-      {/* Site Username Modal */}
+      {/* Site Username Modal - Shown AFTER winning */}
       <Dialog open={showSiteModal} onOpenChange={setShowSiteModal}>
         <DialogContent className="bg-gray-900 border-yellow-400" data-testid="site-modal">
           <DialogHeader>
-            <DialogTitle className="text-yellow-400 text-2xl">Site Kullanıcı Adı</DialogTitle>
+            <DialogTitle className="text-yellow-400 text-2xl">🎉 Tebrikler! 🎉</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-white">Kazandığınız ödülün hangi sitedeki kullanıcı adınıza gönderileceğini belirtin.</p>
+            <div className="bg-purple-800/30 p-4 rounded-lg">
+              <p className="text-white text-lg font-bold mb-2">{wonPrize?.prize?.name}</p>
+              <p className="text-gray-300 mb-2">{wonPrize?.prize?.description}</p>
+              <p className="text-yellow-400 font-bold">Site: {wonPrize?.site?.name}</p>
+            </div>
+            <p className="text-white">Bu ödül <span className="text-yellow-400 font-bold">{wonPrize?.site?.name}</span> hesabınıza gönderilecek. Lütfen bu sitedeki kullanıcı adınızı girin:</p>
             <div>
-              <Label className="text-white">Kullanıcı Adı</Label>
+              <Label className="text-white">{wonPrize?.site?.name} Kullanıcı Adı</Label>
               <Input
                 data-testid="site-username-input"
                 value={siteUsername}
                 onChange={(e) => setSiteUsername(e.target.value)}
                 className="bg-gray-800 text-white border-gray-700"
-                placeholder="Örn: sekabet_user123"
+                placeholder={`Örn: ${wonPrize?.site?.name?.toLowerCase()}_user123`}
               />
             </div>
             <Button
-              data-testid="confirm-spin-btn"
-              onClick={executeSpin}
+              data-testid="confirm-username-btn"
+              onClick={submitSiteUsername}
               className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
             >
-              Çarkı Çevir!
+              Kullanıcı Adını Onayla
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Win Modal */}
+      {/* Win Confirmation Modal */}
       <Dialog open={showWinModal} onOpenChange={setShowWinModal}>
         <DialogContent className="bg-gray-900 border-yellow-400" data-testid="win-modal">
           <DialogHeader>
             <DialogTitle className="text-yellow-400 text-3xl text-center glow-text">
-              🎉 Tebrikler! 🎉
+              ✅ Kaydedildi!
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 text-center">
             <Gift className="mx-auto text-yellow-400" size={80} />
-            <h3 className="text-2xl font-bold text-white" data-testid="won-prize-name">{wonPrize?.prize?.name}</h3>
-            <p className="text-gray-300" data-testid="won-prize-description">{wonPrize?.prize?.description}</p>
-            <p className="text-white">
-              Site: <span className="text-yellow-400 font-bold" data-testid="won-prize-site">{wonPrize?.site?.name}</span>
-            </p>
             <div className="bg-purple-800/30 p-4 rounded-lg">
-              <p className="text-white">Ödülünüz admin onayından sonra hesabınıza tanımlanacaktır.</p>
+              <p className="text-white">Ödülünüz admin onayından sonra <span className="text-yellow-400 font-bold">{wonPrize?.site?.name}</span> hesabınıza tanımlanacaktır.</p>
+              <p className="text-gray-400 mt-2 text-sm">Durumu "Kazandığım Ödüller" bölümünden takip edebilirsiniz.</p>
             </div>
             <Button
               data-testid="close-win-modal-btn"
