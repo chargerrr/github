@@ -134,6 +134,35 @@ const AdminPage = ({ user, logout }) => {
     }
   };
 
+  const handleCreateRule = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(`${API}/admin/rules`, ruleForm, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Kural eklendi!");
+      setShowRuleModal(false);
+      setRuleForm({ title: "", description: "", order: 0 });
+      fetchData();
+    } catch (error) {
+      toast.error("Kural eklenemedi");
+    }
+  };
+
+  const handleDeleteRule = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(`${API}/admin/rules/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Kural silindi");
+      fetchData();
+    } catch (error) {
+      toast.error("Kural silinemedi");
+    }
+  };
+
   const handleUpdateSpin = async (spinId, status, adminNote) => {
     const token = localStorage.getItem("token");
     try {
