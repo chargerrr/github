@@ -220,6 +220,31 @@ async def delete_site(site_id: str, admin: User = Depends(get_admin_user)):
     await db.sites.delete_one({"id": site_id})
     return {"message": "Site deleted"}
 
+@api_router.patch("/admin/sites/{site_id}")
+async def update_site(site_id: str, site_data: SiteCreate, admin: User = Depends(get_admin_user)):
+    await db.sites.update_one(
+        {"id": site_id},
+        {"$set": site_data.model_dump()}
+    )
+    return {"message": "Site updated"}
+
+# Rules endpoints
+@api_router.get("/rules", response_model=List[Rule])
+async def get_rules():
+    rules = await db.rules.find({}, {"_id": 0}).sort("order", 1).to_list(1000)
+    return rules
+
+@api_router.post("/admin/rules", response_model=Rule)
+async def create_rule(rule_data: RuleCreate, admin: User = Depends(get_admin_user)):
+    rule = Rule(**rule_data.model_dump())
+    await db.rules.insert_one(rule.model_dump())
+    return rule
+
+@api_router.delete("/admin/rules/{rule_id}")
+async def delete_rule(rule_id: str, admin: User = Depends(get_admin_user)):
+    await db.rules.delete_one({"id": rule_id})
+    return {"message": "Rule deleted"}
+
 # Prize endpoints
 @api_router.get("/prizes", response_model=List[Prize])
 async def get_prizes():
