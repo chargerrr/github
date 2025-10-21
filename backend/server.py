@@ -217,7 +217,18 @@ async def spin_wheel(spin_data: SpinRequest, current_user: User = Depends(get_cu
     # Check if user can spin
     today = datetime.now(timezone.utc).date().isoformat()
     
-    if current_user.last_spin_date == today and current_user.daily_spin_used:
+    # Reset daily spin if it's a new day
+    if current_user.last_spin_date != today:
+        # New day - reset daily spin
+        current_user.daily_spin_used = False
+        current_user.last_spin_date = today
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$set": {"daily_spin_used": False, "last_spin_date": today}}
+        )
+    
+    # Check if user can spin today
+    if current_user.daily_spin_used:
         if current_user.extra_spins <= 0:
             raise HTTPException(status_code=400, detail="No spins available today")
         # Use extra spin
