@@ -1,52 +1,66 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import HomePage from "@/pages/HomePage";
+import AdminPage from "@/pages/AdminPage";
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      checkAuth(token);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const checkAuth = async (token) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        localStorage.removeItem("token");
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      localStorage.removeItem("token");
+    }
+    setLoading(false);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-yellow-400"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={<HomePage user={user} setUser={setUser} logout={logout} />} />
+          <Route
+            path="/admin"
+            element={user?.is_admin ? <AdminPage user={user} logout={logout} /> : <Navigate to="/" />}
+          />
         </Routes>
       </BrowserRouter>
+      <Toaster position="top-right" />
     </div>
   );
 }

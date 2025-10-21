@@ -1,0 +1,461 @@
+import { useState, useRef, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Trophy, Star, Gift, LogOut, User, Award } from "lucide-react";
+import axios from "axios";
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const HomePage = ({ user, setUser, logout }) => {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+  const [spinning, setSpinning] = useState(false);
+  const [wonPrize, setWonPrize] = useState(null);
+  const [showWinModal, setShowWinModal] = useState(false);
+  const [showSiteModal, setShowSiteModal] = useState(false);
+  const [siteUsername, setSiteUsername] = useState("");
+  const [prizes, setPrizes] = useState([]);
+  const [sites, setSites] = useState([]);
+  const [mySpins, setMySpins] = useState([]);
+  const wheelRef = useRef(null);
+  const audioRef = useRef(null);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    phone: "",
+    telegram_username: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    fetchPrizes();
+    fetchSites();
+    if (user) {
+      fetchMySpins();
+    }
+  }, [user]);
+
+  const fetchPrizes = async () => {
+    try {
+      const response = await axios.get(`${API}/prizes`);
+      setPrizes(response.data);
+    } catch (error) {
+      console.error("Error fetching prizes:", error);
+    }
+  };
+
+  const fetchSites = async () => {
+    try {
+      const response = await axios.get(`${API}/sites`);
+      setSites(response.data);
+    } catch (error) {
+      console.error("Error fetching sites:", error);
+    }
+  };
+
+  const fetchMySpins = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${API}/wheel/my-spins`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMySpins(response.data);
+    } catch (error) {
+      console.error("Error fetching spins:", error);
+    }
+  };
+
+  const handleAuth = async (e) => {
+    e.preventDefault();
+    try {
+      const endpoint = isLogin ? "/auth/login" : "/auth/register";
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : formData;
+
+      const response = await axios.post(`${API}${endpoint}`, payload);
+      localStorage.setItem("token", response.data.token);
+      setUser(response.data.user);
+      setShowAuthModal(false);
+      toast.success(isLogin ? "Giriş başarılı!" : "Kayıt başarılı!");
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Bir hata oluştu");
+    }
+  };
+
+  const playSpinSound = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
+
+  const createParticles = () => {
+    const container = document.querySelector(".wheel-container");
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement("div");
+      particle.className = "particle";
+      const angle = (Math.PI * 2 * i) / 30;
+      const distance = 100 + Math.random() * 100;
+      particle.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+      particle.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+      particle.style.left = "50%";
+      particle.style.top = "50%";
+      container.appendChild(particle);
+      setTimeout(() => particle.remove(), 2000);
+    }
+  };
+
+  const handleSpin = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+    setShowSiteModal(true);
+  };
+
+  const executeSpin = async () => {
+    if (!siteUsername.trim()) {
+      toast.error("Lütfen kullanıcı adınızı girin");
+      return;
+    }
+
+    setShowSiteModal(false);
+    setSpinning(true);
+    playSpinSound();
+
+    const rotations = 5 + Math.random() * 3;
+    const degrees = rotations * 360;
+    if (wheelRef.current) {
+      wheelRef.current.style.transform = `rotate(${degrees}deg)`;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${API}/wheel/spin`,
+        { site_username: siteUsername },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setTimeout(() => {
+        setWonPrize(response.data);
+        setShowWinModal(true);
+        setSpinning(false);
+        createParticles();
+        setSiteUsername("");
+        fetchMySpins();
+      }, 4000);
+    } catch (error) {
+      setSpinning(false);
+      toast.error(error.response?.data?.detail || "Çark çevrilemedi");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 relative overflow-hidden">
+      {/* Animated background stars */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(50)].map((_, i) => (
+          <Star
+            key={i}
+            className="absolute text-yellow-400 opacity-20"
+            size={Math.random() * 20 + 10}
+            style={
+              {
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `twinkle ${Math.random() * 3 + 2}s infinite`,
+              }
+            }
+          />
+        ))}
+      </div>
+
+      {/* Header */}
+      <header className="relative z-10 p-6 flex justify-between items-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-yellow-400 glow-text" data-testid="app-title">
+          Kazandıran Çark
+        </h1>
+        {user ? (
+          <div className="flex items-center gap-4">
+            {user.is_admin && (
+              <Button
+                data-testid="admin-panel-btn"
+                onClick={() => (window.location.href = "/admin")}
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                Admin Panel
+              </Button>
+            )}
+            <div className="glass-card px-4 py-2 rounded-lg text-white flex items-center gap-2">
+              <User size={20} />
+              <span data-testid="user-name">{user.name}</span>
+            </div>
+            <Button
+              data-testid="logout-btn"
+              onClick={logout}
+              variant="outline"
+              className="border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900"
+            >
+              <LogOut size={18} />
+            </Button>
+          </div>
+        ) : (
+          <Button
+            data-testid="login-btn"
+            onClick={() => setShowAuthModal(true)}
+            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-3 text-lg"
+          >
+            Giriş Yap / Kayıt Ol
+          </Button>
+        )}
+      </header>
+
+      {/* Main content */}
+      <main className="relative z-10 flex flex-col items-center justify-center px-4 py-12">
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" data-testid="main-heading">
+            Şansını Dene, Büyük Ödüller Kazan!
+          </h2>
+          <p className="text-lg text-gray-300" data-testid="sub-heading">
+            {user
+              ? `${user.extra_spins > 0 ? `${user.extra_spins} ekstra hakkın var!` : "Bugünlük çark hakkını kullan!"}`
+              : "Çarkı çevirmek için giriş yapın"}
+          </p>
+        </div>
+
+        {/* Wheel */}
+        <div className="wheel-container mb-12" data-testid="wheel-container">
+          <div className="wheel-pointer"></div>
+          <div ref={wheelRef} className={`wheel ${spinning ? "spinning" : ""}`} data-testid="wheel"></div>
+          <div
+            className="wheel-center"
+            onClick={handleSpin}
+            data-testid="spin-btn"
+            style={{ pointerEvents: spinning ? "none" : "auto" }}
+          >
+            <Trophy className="text-white" size={40} />
+          </div>
+        </div>
+
+        {/* My Prizes */}
+        {user && mySpins.length > 0 && (
+          <div className="max-w-4xl w-full glass-card rounded-2xl p-8" data-testid="my-prizes-section">
+            <h3 className="text-2xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
+              <Award /> Kazandığım Ödüller
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {mySpins.map((item, index) => (
+                <Card key={index} className="bg-gray-800/50 border-yellow-400/30" data-testid={`prize-card-${index}`}>
+                  <CardHeader>
+                    <CardTitle className="text-yellow-400 text-lg">{item.prize?.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-white mb-2">Site: {item.site?.name}</p>
+                    <p className="text-gray-400 text-sm mb-2">{item.prize?.description}</p>
+                    <div
+                      className={`inline-block px-3 py-1 rounded-full text-sm ${
+                        item.spin.status === "approved"
+                          ? "bg-green-500/20 text-green-400"
+                          : item.spin.status === "rejected"
+                          ? "bg-red-500/20 text-red-400"
+                          : "bg-yellow-500/20 text-yellow-400"
+                      }`}
+                      data-testid={`prize-status-${index}`}
+                    >
+                      {item.spin.status === "approved"
+                        ? "Onaylandı"
+                        : item.spin.status === "rejected"
+                        ? "Reddedildi"
+                        : "Bekliyor"}
+                    </div>
+                    {item.spin.admin_note && (
+                      <p className="text-gray-400 text-sm mt-2" data-testid={`admin-note-${index}`}>
+                        Not: {item.spin.admin_note}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Auth Modal */}
+      <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
+        <DialogContent className="bg-gray-900 border-yellow-400" data-testid="auth-modal">
+          <DialogHeader>
+            <DialogTitle className="text-yellow-400 text-2xl">
+              {isLogin ? "Giriş Yap" : "Kayıt Ol"}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAuth} className="space-y-4">
+            {!isLogin && (
+              <>
+                <div>
+                  <Label className="text-white">Ad</Label>
+                  <Input
+                    data-testid="name-input"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="bg-gray-800 text-white border-gray-700"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">Soyad</Label>
+                  <Input
+                    data-testid="surname-input"
+                    value={formData.surname}
+                    onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
+                    className="bg-gray-800 text-white border-gray-700"
+                    required
+                  />
+                </div>
+              </>
+            )}
+            <div>
+              <Label className="text-white">E-posta</Label>
+              <Input
+                data-testid="email-input"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                required
+              />
+            </div>
+            {!isLogin && (
+              <>
+                <div>
+                  <Label className="text-white">Telefon</Label>
+                  <Input
+                    data-testid="phone-input"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="bg-gray-800 text-white border-gray-700"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">Telegram Kullanıcı Adı</Label>
+                  <Input
+                    data-testid="telegram-input"
+                    value={formData.telegram_username}
+                    onChange={(e) => setFormData({ ...formData, telegram_username: e.target.value })}
+                    className="bg-gray-800 text-white border-gray-700"
+                    required
+                  />
+                </div>
+              </>
+            )}
+            <div>
+              <Label className="text-white">Şifre</Label>
+              <Input
+                data-testid="password-input"
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                required
+              />
+            </div>
+            <Button
+              data-testid="auth-submit-btn"
+              type="submit"
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
+            >
+              {isLogin ? "Giriş Yap" : "Kayıt Ol"}
+            </Button>
+            <button
+              data-testid="toggle-auth-mode"
+              type="button"
+              onClick={() => setIsLogin(!isLogin)}
+              className="w-full text-yellow-400 hover:underline text-sm"
+            >
+              {isLogin ? "Hesabın yok mu? Kayıt ol" : "Zaten hesabın var mı? Giriş yap"}
+            </button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Site Username Modal */}
+      <Dialog open={showSiteModal} onOpenChange={setShowSiteModal}>
+        <DialogContent className="bg-gray-900 border-yellow-400" data-testid="site-modal">
+          <DialogHeader>
+            <DialogTitle className="text-yellow-400 text-2xl">Site Kullanıcı Adı</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-white">Kazandığınız ödülün hangi sitedeki kullanıcı adınıza gönderileceğini belirtin.</p>
+            <div>
+              <Label className="text-white">Kullanıcı Adı</Label>
+              <Input
+                data-testid="site-username-input"
+                value={siteUsername}
+                onChange={(e) => setSiteUsername(e.target.value)}
+                className="bg-gray-800 text-white border-gray-700"
+                placeholder="Örn: sekabet_user123"
+              />
+            </div>
+            <Button
+              data-testid="confirm-spin-btn"
+              onClick={executeSpin}
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
+            >
+              Çarkı Çevir!
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Win Modal */}
+      <Dialog open={showWinModal} onOpenChange={setShowWinModal}>
+        <DialogContent className="bg-gray-900 border-yellow-400" data-testid="win-modal">
+          <DialogHeader>
+            <DialogTitle className="text-yellow-400 text-3xl text-center glow-text">
+              🎉 Tebrikler! 🎉
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 text-center">
+            <Gift className="mx-auto text-yellow-400" size={80} />
+            <h3 className="text-2xl font-bold text-white" data-testid="won-prize-name">{wonPrize?.prize?.name}</h3>
+            <p className="text-gray-300" data-testid="won-prize-description">{wonPrize?.prize?.description}</p>
+            <p className="text-white">
+              Site: <span className="text-yellow-400 font-bold" data-testid="won-prize-site">{wonPrize?.site?.name}</span>
+            </p>
+            <div className="bg-purple-800/30 p-4 rounded-lg">
+              <p className="text-white">Ödülünüz admin onayından sonra hesabınıza tanımlanacaktır.</p>
+            </div>
+            <Button
+              data-testid="close-win-modal-btn"
+              onClick={() => setShowWinModal(false)}
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
+            >
+              Tamam
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Hidden audio element */}
+      <audio ref={audioRef} src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" />
+
+      <style>{`
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.2; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default HomePage;
