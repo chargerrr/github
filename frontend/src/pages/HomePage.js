@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Trophy, Star, Gift, LogOut, User, Award } from "lucide-react";
+import { Trophy, Star, Gift, LogOut, User, Award, CheckCircle2 } from "lucide-react";
 import axios from "axios";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -21,6 +21,7 @@ const HomePage = ({ user, setUser, logout }) => {
   const [siteUsername, setSiteUsername] = useState("");
   const [prizes, setPrizes] = useState([]);
   const [sites, setSites] = useState([]);
+  const [rules, setRules] = useState([]);
   const [mySpins, setMySpins] = useState([]);
   const wheelRef = useRef(null);
   const audioRef = useRef(null);
