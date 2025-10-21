@@ -221,8 +221,9 @@ async def delete_prize(prize_id: str, admin: User = Depends(get_admin_user)):
     return {"message": "Prize deleted"}
 
 # Wheel spin endpoints
-@api_router.post("/wheel/spin", response_model=SpinResponse)
-async def spin_wheel(spin_data: SpinRequest, current_user: User = Depends(get_current_user)):
+@api_router.post("/wheel/spin-preview", response_model=SpinPreviewResponse)
+async def spin_wheel_preview(current_user: User = Depends(get_current_user)):
+    """First step: Spin the wheel and show which prize was won"""
     # Check if user can spin
     today = datetime.now(timezone.utc).date().isoformat()
     
@@ -277,15 +278,33 @@ async def spin_wheel(spin_data: SpinRequest, current_user: User = Depends(get_cu
     if not site:
         raise HTTPException(status_code=400, detail="Site not found")
     
-    # Create spin record
+    # Create temporary spin record (without site_username yet)
     spin = WheelSpin(
         user_id=current_user.id,
         prize_id=selected_prize.id,
-        site_username=spin_data.site_username
+        site_username=""  # Will be filled in confirm step
     )
     await db.spins.insert_one(spin.model_dump())
     
-    return SpinResponse(spin=spin, prize=selected_prize, site=Site(**site))
+    return SpinPreviewResponse(spin=spin, prize=selected_prize, site=Site(**site))
+
+@api_router.post("/wheel/confirm-spin")
+async def confirm_spin(confirm_data: ConfirmSpinRequest, current_user: User = Depends(get_current_user)):
+    """Second step: User provides their site username for the prize"""
+    # Update the spin with site username
+    spin = await db.spins.find_one({"id": confirm_data.spin_id}, {"_id": 0})
+    if not spin:
+        raise HTTPException(status_code=404, detail="Spin not found")
+    
+    if spin["user_id"] != current_user.id:
+        raise HTTPException(status_code=403, detail="Not your spin")
+    
+    await db.spins.update_one(
+        {"id": confirm_data.spin_id},
+        {"$set": {"site_username": confirm_data.site_username}}
+    )
+    
+    return {"message": "Site username confirmed"}
 
 @api_router.get("/wheel/my-spins")
 async def get_my_spins(current_user: User = Depends(get_current_user)):
