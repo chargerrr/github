@@ -283,7 +283,7 @@ const HomePage = ({ user, setUser, logout }) => {
 
         {/* My Prizes */}
         {user && mySpins.length > 0 && (
-          <div className="max-w-4xl w-full glass-card rounded-2xl p-8" data-testid="my-prizes-section">
+          <div className="max-w-4xl w-full glass-card rounded-2xl p-8 mb-12" data-testid="my-prizes-section">
             <h3 className="text-2xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
               <Award /> Kazandığım Ödüller
             </h3>
@@ -319,6 +319,75 @@ const HomePage = ({ user, setUser, logout }) => {
                     )}
                   </CardContent>
                 </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Partner Sites Section */}
+        {sites.length > 0 && (
+          <div className="max-w-6xl w-full mb-12" data-testid="partner-sites-section">
+            <h3 className="text-3xl font-bold text-yellow-400 mb-8 text-center glow-text">
+              Partnerimiz Bahis Siteleri
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {sites.map((site, index) => (
+                <Card 
+                  key={site.id} 
+                  className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-yellow-400/30 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer"
+                  data-testid={`site-card-${index}`}
+                >
+                  <CardContent className="p-6 flex flex-col items-center justify-center text-center space-y-3">
+                    <div className="w-full h-16 flex items-center justify-center mb-2">
+                      <img 
+                        src={site.logo_url} 
+                        alt={site.name} 
+                        className="max-w-full max-h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
+                      />
+                      <div style={{display: 'none'}} className="text-xl font-bold text-yellow-400">
+                        {site.name}
+                      </div>
+                    </div>
+                    <h4 className="text-lg font-bold text-white">{site.name}</h4>
+                    {site.welcome_bonus && (
+                      <div className="bg-yellow-400/20 px-3 py-1.5 rounded-full">
+                        <p className="text-yellow-400 font-semibold text-sm">{site.welcome_bonus}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Rules Section */}
+        {rules.length > 0 && (
+          <div className="max-w-4xl w-full glass-card rounded-2xl p-8" data-testid="rules-section">
+            <h3 className="text-3xl font-bold text-yellow-400 mb-6 text-center">
+              Çark Çevirme Kuralları
+            </h3>
+            <div className="space-y-4">
+              {rules.map((rule, index) => (
+                <div 
+                  key={rule.id} 
+                  className="flex gap-4 p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-colors"
+                  data-testid={`rule-${index}`}
+                >
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center">
+                      <CheckCircle2 className="text-gray-900" size={20} />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold text-lg mb-1">{rule.title}</h4>
+                    <p className="text-gray-300">{rule.description}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
