@@ -144,13 +144,24 @@ const HomePage = ({ user, setUser, logout }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setTimeout(() => {
+      setTimeout(async () => {
         setWonPrize(response.data);
         setShowWinModal(true);
         setSpinning(false);
         createParticles();
         setSiteUsername("");
         fetchMySpins();
+        
+        // Refresh user data to update spin counts
+        const token = localStorage.getItem("token");
+        try {
+          const userResponse = await axios.get(`${API}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setUser(userResponse.data);
+        } catch (error) {
+          console.error("Failed to refresh user data:", error);
+        }
       }, 4000);
     } catch (error) {
       setSpinning(false);
