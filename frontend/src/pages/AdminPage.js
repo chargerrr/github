@@ -523,11 +523,31 @@ const AdminPage = ({ user, logout }) => {
               <Label className="text-white">Site Adı</Label>
               <Input
                 data-testid="site-name-input"
-                value={siteName}
-                onChange={(e) => setSiteName(e.target.value)}
+                value={siteForm.name}
+                onChange={(e) => setSiteForm({ ...siteForm, name: e.target.value })}
                 className="bg-gray-800 text-white border-gray-700"
                 placeholder="Örn: Sekabet"
                 required
+              />
+            </div>
+            <div>
+              <Label className="text-white">Logo URL</Label>
+              <Input
+                data-testid="site-logo-input"
+                value={siteForm.logo_url}
+                onChange={(e) => setSiteForm({ ...siteForm, logo_url: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                placeholder="https://..."
+              />
+            </div>
+            <div>
+              <Label className="text-white">Deneme Bonusu</Label>
+              <Input
+                data-testid="site-bonus-input"
+                value={siteForm.welcome_bonus}
+                onChange={(e) => setSiteForm({ ...siteForm, welcome_bonus: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                placeholder="500 TL Deneme Bonusu"
               />
             </div>
             <Button
@@ -536,6 +556,59 @@ const AdminPage = ({ user, logout }) => {
               className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
             >
               Site Ekle
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rule Modal */}
+      <Dialog open={showRuleModal} onOpenChange={setShowRuleModal}>
+        <DialogContent className="bg-gray-900 border-yellow-400" data-testid="rule-modal">
+          <DialogHeader>
+            <DialogTitle className="text-yellow-400 text-2xl">Yeni Kural Ekle</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateRule} className="space-y-4">
+            <div>
+              <Label className="text-white">Kural Başlığı</Label>
+              <Input
+                data-testid="rule-title-input"
+                value={ruleForm.title}
+                onChange={(e) => setRuleForm({ ...ruleForm, title: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                placeholder="Örn: Günlük Çark Hakkı"
+                required
+              />
+            </div>
+            <div>
+              <Label className="text-white">Açıklama</Label>
+              <Textarea
+                data-testid="rule-description-input"
+                value={ruleForm.description}
+                onChange={(e) => setRuleForm({ ...ruleForm, description: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                placeholder="Kuralın detaylı açıklaması..."
+                rows={4}
+                required
+              />
+            </div>
+            <div>
+              <Label className="text-white">Sıra</Label>
+              <Input
+                data-testid="rule-order-input"
+                type="number"
+                min="0"
+                value={ruleForm.order}
+                onChange={(e) => setRuleForm({ ...ruleForm, order: parseInt(e.target.value) })}
+                className="bg-gray-800 text-white border-gray-700"
+                required
+              />
+            </div>
+            <Button
+              data-testid="submit-rule-btn"
+              type="submit"
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
+            >
+              Kural Ekle
             </Button>
           </form>
         </DialogContent>
