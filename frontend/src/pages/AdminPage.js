@@ -234,6 +234,9 @@ const AdminPage = ({ user, logout }) => {
           <TabsTrigger value="sites" data-testid="sites-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Globe className="mr-2" size={18} /> Siteler
           </TabsTrigger>
+          <TabsTrigger value="rules" data-testid="rules-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
+            <Award className="mr-2" size={18} /> Kurallar
+          </TabsTrigger>
           <TabsTrigger value="users" data-testid="users-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Users className="mr-2" size={18} /> Kullanıcılar
           </TabsTrigger>
