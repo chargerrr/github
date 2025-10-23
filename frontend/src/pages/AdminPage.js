@@ -36,7 +36,11 @@ const AdminPage = ({ user, logout }) => {
     name: "",
     logo_url: "",
     welcome_bonus: "",
+    category: "other",
+    order: 999,
   });
+
+  const [logoFile, setLogoFile] = useState(null);
 
   const [ruleForm, setRuleForm] = useState({
     title: "",
