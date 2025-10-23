@@ -231,7 +231,7 @@ async def get_me(current_user: User = Depends(get_current_user)):
 # Site endpoints
 @api_router.get("/sites", response_model=List[Site])
 async def get_sites():
-    sites = await db.sites.find({}, {"_id": 0}).to_list(1000)
+    sites = await db.sites.find({}, {"_id": 0}).sort("order", 1).to_list(1000)
     return sites
 
 @api_router.post("/admin/sites", response_model=Site)
@@ -240,11 +240,6 @@ async def create_site(site_data: SiteCreate, admin: User = Depends(get_admin_use
     await db.sites.insert_one(site.model_dump())
     return site
 
-@api_router.delete("/admin/sites/{site_id}")
-async def delete_site(site_id: str, admin: User = Depends(get_admin_user)):
-    await db.sites.delete_one({"id": site_id})
-    return {"message": "Site deleted"}
-
 @api_router.patch("/admin/sites/{site_id}")
 async def update_site(site_id: str, site_data: SiteCreate, admin: User = Depends(get_admin_user)):
     await db.sites.update_one(
@@ -252,6 +247,55 @@ async def update_site(site_id: str, site_data: SiteCreate, admin: User = Depends
         {"$set": site_data.model_dump()}
     )
     return {"message": "Site updated"}
+
+@api_router.delete("/admin/sites/{site_id}")
+async def delete_site(site_id: str, admin: User = Depends(get_admin_user)):
+    await db.sites.delete_one({"id": site_id})
+    return {"message": "Site deleted"}
+
+@api_router.post("/admin/upload-logo")
+async def upload_logo(file: UploadFile = File(...), admin: User = Depends(get_admin_user)):
+    # Create uploads directory if not exists
+    upload_dir = Path("/app/backend/uploads")
+    upload_dir.mkdir(exist_ok=True)
+    
+    # Generate unique filename
+    file_extension = file.filename.split(".")[-1]
+    unique_filename = f"{uuid.uuid4()}.{file_extension}"
+    file_path = upload_dir / unique_filename
+    
+    # Save file
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    # Return URL
+    file_url = f"/uploads/{unique_filename}"
+    return {"url": file_url}
+
+# Settings endpoints
+@api_router.get("/settings")
+async def get_settings():
+    settings = await db.settings.find_one({"id": "site_settings"}, {"_id": 0})
+    if not settings:
+        # Return default settings
+        default_settings = SiteSettings()
+        await db.settings.insert_one(default_settings.model_dump())
+        return default_settings
+    return settings
+
+@api_router.patch("/admin/settings")
+async def update_settings(settings_data: SettingsUpdate, admin: User = Depends(get_admin_user)):
+    update_dict = {k: v for k, v in settings_data.model_dump().items() if v is not None}
+    
+    if update_dict:
+        await db.settings.update_one(
+            {"id": "site_settings"},
+            {"$set": update_dict},
+            upsert=True
+        )
+    
+    settings = await db.settings.find_one({"id": "site_settings"}, {"_id": 0})
+    return settings
 
 # Rules endpoints
 @api_router.get("/rules", response_model=List[Rule])
