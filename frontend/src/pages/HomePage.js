@@ -747,4 +747,35 @@ const HomePage = ({ user, setUser, logout }) => {
   );
 };
 
+// SiteCard Component
+const SiteCard = ({ site, index }) => (
+  <Card 
+    className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-yellow-400/30 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer"
+    data-testid={`site-card-${index}`}
+  >
+    <CardContent className="p-6 flex flex-col items-center justify-center text-center space-y-3">
+      <div className="w-full h-16 flex items-center justify-center mb-2">
+        <img 
+          src={site.logo_url} 
+          alt={site.name} 
+          className="max-w-full max-h-full object-contain"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'block';
+          }}
+        />
+        <div style={{display: 'none'}} className="text-xl font-bold text-yellow-400">
+          {site.name}
+        </div>
+      </div>
+      <h4 className="text-lg font-bold text-white">{site.name}</h4>
+      {site.welcome_bonus && (
+        <div className="bg-yellow-400/20 px-3 py-1.5 rounded-full">
+          <p className="text-yellow-400 font-semibold text-sm">{site.welcome_bonus}</p>
+        </div>
+      )}
+    </CardContent>
+  </Card>
+);
+
 export default HomePage;
