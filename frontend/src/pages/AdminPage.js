@@ -112,13 +112,33 @@ const AdminPage = ({ user, logout }) => {
   const handleCreateSite = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+    
     try {
-      await axios.post(`${API}/admin/sites`, siteForm, {
+      let logoUrl = siteForm.logo_url;
+      
+      // Upload logo if file selected
+      if (logoFile) {
+        const formData = new FormData();
+        formData.append("file", logoFile);
+        
+        const uploadResponse = await axios.post(`${API}/admin/upload-logo`, formData, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          },
+        });
+        
+        logoUrl = `${process.env.REACT_APP_BACKEND_URL}${uploadResponse.data.url}`;
+      }
+      
+      await axios.post(`${API}/admin/sites`, { ...siteForm, logo_url: logoUrl }, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
       toast.success("Site eklendi!");
       setShowSiteModal(false);
-      setSiteForm({ name: "", logo_url: "", welcome_bonus: "" });
+      setSiteForm({ name: "", logo_url: "", welcome_bonus: "", category: "other", order: 999 });
+      setLogoFile(null);
       fetchData();
     } catch (error) {
       toast.error("Site eklenemedi");
