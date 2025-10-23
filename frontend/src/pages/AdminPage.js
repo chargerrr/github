@@ -1080,6 +1080,94 @@ const AdminPage = ({ user, logout }) => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Create Admin Modal */}
+      <Dialog open={showCreateAdminModal} onOpenChange={setShowCreateAdminModal}>
+        <DialogContent className="bg-gray-900 border-green-500" data-testid="create-admin-modal">
+          <DialogHeader>
+            <DialogTitle className="text-green-400 text-2xl">👑 Yeni Admin Kullanıcısı Ekle</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateAdmin} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-white">Ad</Label>
+                <Input
+                  value={newAdminData.name}
+                  onChange={(e) => setNewAdminData({ ...newAdminData, name: e.target.value })}
+                  className="bg-gray-800 text-white border-gray-700"
+                  required
+                  data-testid="admin-name-input"
+                />
+              </div>
+              <div>
+                <Label className="text-white">Soyad</Label>
+                <Input
+                  value={newAdminData.surname}
+                  onChange={(e) => setNewAdminData({ ...newAdminData, surname: e.target.value })}
+                  className="bg-gray-800 text-white border-gray-700"
+                  required
+                  data-testid="admin-surname-input"
+                />
+              </div>
+            </div>
+            <div>
+              <Label className="text-white">E-posta</Label>
+              <Input
+                type="email"
+                value={newAdminData.email}
+                onChange={(e) => setNewAdminData({ ...newAdminData, email: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                required
+                data-testid="admin-email-input"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Telefon</Label>
+              <Input
+                value={newAdminData.phone}
+                onChange={(e) => setNewAdminData({ ...newAdminData, phone: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                required
+                data-testid="admin-phone-input"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Telegram Kullanıcı Adı</Label>
+              <Input
+                value={newAdminData.telegram_username}
+                onChange={(e) => setNewAdminData({ ...newAdminData, telegram_username: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                required
+                data-testid="admin-telegram-input"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Şifre</Label>
+              <Input
+                type="password"
+                value={newAdminData.password}
+                onChange={(e) => setNewAdminData({ ...newAdminData, password: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                placeholder="En az 6 karakter"
+                required
+                data-testid="admin-password-input"
+              />
+            </div>
+            <div className="bg-green-600/20 p-3 rounded-lg border border-green-500/50">
+              <p className="text-green-400 text-sm">
+                ⚠️ Bu kullanıcı otomatik olarak admin yetkilerine sahip olacaktır.
+              </p>
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold"
+              data-testid="submit-create-admin-btn"
+            >
+              Admin Oluştur
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
