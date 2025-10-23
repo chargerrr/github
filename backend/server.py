@@ -65,13 +65,37 @@ class Site(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     logo_url: Optional[str] = None
-    welcome_bonus: Optional[str] = None  # "500 TL Deneme Bonusu"
+    welcome_bonus: Optional[str] = None
+    category: str = "other"  # main_sponsor, editor_choice, monthly, yearly, top_winners, other
+    order: int = 999
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class SiteCreate(BaseModel):
     name: str
     logo_url: Optional[str] = None
     welcome_bonus: Optional[str] = None
+    category: str = "other"
+    order: int = 999
+
+class SiteSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = "site_settings"
+    site_title: str = "Kazandıran Çark"
+    site_description: str = "Şansını dene, büyük ödüller kazan!"
+    partnership_text: str = "Reklam ve İş Birliği İçin İletişime Geçin"
+    partnership_email: str = "info@kazandirancark.com"
+    partnership_phone: str = "+90 555 123 4567"
+    meta_keywords: str = "çark çevir, ödül kazan, bahis siteleri, bonus"
+    meta_description: str = "Kazandıran Çark ile şansınızı deneyin! Bahis sitelerinden büyük ödüller kazanın."
+    
+class SettingsUpdate(BaseModel):
+    site_title: Optional[str] = None
+    site_description: Optional[str] = None
+    partnership_text: Optional[str] = None
+    partnership_email: Optional[str] = None
+    partnership_phone: Optional[str] = None
+    meta_keywords: Optional[str] = None
+    meta_description: Optional[str] = None
 
 class Rule(BaseModel):
     model_config = ConfigDict(extra="ignore")
