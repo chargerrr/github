@@ -419,7 +419,7 @@ const AdminPage = ({ user, logout }) => {
 
         {/* Users Tab */}
         <TabsContent value="users" data-testid="users-content">
-          <div className="mb-4">
+          <div className="mb-4 flex gap-4">
             <Button
               data-testid="grant-extra-spins-btn"
               onClick={() => setShowExtraSpinModal(true)}
@@ -427,12 +427,31 @@ const AdminPage = ({ user, logout }) => {
             >
               <Plus className="mr-2" size={18} /> Ekstra Çark Hakkı Tanımla
             </Button>
+            <Button
+              data-testid="export-users-btn"
+              onClick={handleExportUsers}
+              variant="outline"
+              className="border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900"
+            >
+              Export CSV
+            </Button>
           </div>
           <div className="grid gap-4">
             {allUsers.map((u, index) => (
               <Card key={u.id} className="bg-gray-800/80 border-yellow-400/30" data-testid={`user-card-${index}`}>
                 <CardHeader>
-                  <CardTitle className="text-yellow-400">{u.name} {u.surname}</CardTitle>
+                  <CardTitle className="text-yellow-400 flex justify-between items-center">
+                    <span>{u.name} {u.surname}</span>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleResetDailySpin(u.id)}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        Reset Daily
+                      </Button>
+                    </div>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-white space-y-1">
                   <p><strong>Email:</strong> {u.email}</p>
@@ -440,6 +459,7 @@ const AdminPage = ({ user, logout }) => {
                   <p><strong>Telegram:</strong> {u.telegram_username}</p>
                   <p><strong>Ekstra Çark:</strong> {u.extra_spins}</p>
                   <p><strong>Günlük Çark:</strong> {u.daily_spin_used ? "Kullanıldı" : "Kullanılmadı"}</p>
+                  <p><strong>Admin:</strong> {u.is_admin ? "Evet" : "Hayır"}</p>
                 </CardContent>
               </Card>
             ))}
