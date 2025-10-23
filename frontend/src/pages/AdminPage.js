@@ -281,6 +281,37 @@ const AdminPage = ({ user, logout }) => {
     }
   };
 
+  const handleClearDatabase = async () => {
+    if (selectedCollections.length === 0) {
+      toast.error("Lütfen en az bir koleksiyon seçin");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post(
+        `${API}/admin/database/clear`,
+        selectedCollections,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      toast.success(`Veritabanı temizlendi! ${JSON.stringify(response.data.deleted)}`);
+      setShowClearModal(false);
+      setSelectedCollections([]);
+      fetchData();
+    } catch (error) {
+      toast.error("Temizleme başarısız");
+    }
+  };
+
+  const toggleCollection = (collection) => {
+    if (selectedCollections.includes(collection)) {
+      setSelectedCollections(selectedCollections.filter(c => c !== collection));
+    } else {
+      setSelectedCollections([...selectedCollections, collection]);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-6">
       <header className="mb-8 flex justify-between items-center">
