@@ -258,6 +258,13 @@ const AdminPage = ({ user, logout }) => {
         <h1 className="text-4xl font-bold text-yellow-400 glow-text" data-testid="admin-title">Admin Panel</h1>
         <div className="flex gap-4">
           <Button
+            data-testid="settings-btn"
+            onClick={() => (window.location.href = "/settings")}
+            className="bg-purple-600 hover:bg-purple-700"
+          >
+            <Award size={18} className="mr-2" /> Ayarlar
+          </Button>
+          <Button
             data-testid="home-btn"
             onClick={() => (window.location.href = "/")}
             variant="outline"
