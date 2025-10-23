@@ -524,6 +524,47 @@ async def export_users(admin: User = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(10000)
     return users
 
+# Database Management endpoints
+@api_router.post("/admin/database/clear")
+async def clear_database(collections: List[str], admin: User = Depends(get_admin_user)):
+    """Clear specified collections. Options: users, sites, prizes, spins, rules"""
+    deleted_counts = {}
+    
+    if "users" in collections:
+        # Delete all users except admins
+        result = await db.users.delete_many({"is_admin": {"$ne": True}})
+        deleted_counts["users"] = result.deleted_count
+    
+    if "sites" in collections:
+        result = await db.sites.delete_many({})
+        deleted_counts["sites"] = result.deleted_count
+    
+    if "prizes" in collections:
+        result = await db.prizes.delete_many({})
+        deleted_counts["prizes"] = result.deleted_count
+    
+    if "spins" in collections:
+        result = await db.spins.delete_many({})
+        deleted_counts["spins"] = result.deleted_count
+    
+    if "rules" in collections:
+        result = await db.rules.delete_many({})
+        deleted_counts["rules"] = result.deleted_count
+    
+    return {"message": "Collections cleared", "deleted": deleted_counts}
+
+@api_router.get("/admin/database/stats")
+async def get_database_stats(admin: User = Depends(get_admin_user)):
+    """Get database statistics"""
+    stats = {
+        "users": await db.users.count_documents({}),
+        "sites": await db.sites.count_documents({}),
+        "prizes": await db.prizes.count_documents({}),
+        "spins": await db.spins.count_documents({}),
+        "rules": await db.rules.count_documents({})
+    }
+    return stats
+
 app.include_router(api_router)
 
 # Mount uploads directory
