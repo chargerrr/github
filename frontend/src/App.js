@@ -53,20 +53,22 @@ function App() {
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage user={user} setUser={setUser} logout={logout} />} />
-          <Route
-            path="/admin"
-            element={user?.is_admin ? <AdminPage user={user} logout={logout} /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/settings"
-            element={user?.is_admin ? <SettingsPage user={user} logout={logout} /> : <Navigate to="/" />}
-          />
-        </Routes>
-      </BrowserRouter>
-      <Toaster position="top-right" />
+      <HelmetProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage user={user} setUser={setUser} logout={logout} />} />
+            <Route
+              path="/admin"
+              element={user?.is_admin ? <AdminPage user={user} logout={logout} /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/settings"
+              element={user?.is_admin ? <SettingsPage user={user} logout={logout} /> : <Navigate to="/" />}
+            />
+          </Routes>
+        </BrowserRouter>
+        <Toaster position="top-right" />
+      </HelmetProvider>
     </div>
   );
 }
