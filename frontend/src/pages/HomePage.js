@@ -43,6 +43,7 @@ const HomePage = ({ user, setUser, logout }) => {
     fetchSites();
     fetchRules();
     fetchRecentWinners();
+    fetchSettings();
     if (user) {
       fetchMySpins();
     }
