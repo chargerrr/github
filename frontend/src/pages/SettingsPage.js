@@ -19,6 +19,11 @@ const SettingsPage = ({ user, logout }) => {
     partnership_phone: "",
     meta_keywords: "",
     meta_description: "",
+    facebook_url: "",
+    twitter_url: "",
+    instagram_url: "",
+    youtube_url: "",
+    telegram_url: "",
   });
 
   useEffect(() => {
