@@ -364,6 +364,30 @@ async def get_my_spins(current_user: User = Depends(get_current_user)):
     
     return result
 
+@api_router.get("/recent-winners")
+async def get_recent_winners():
+    """Get recent 10 winners for display"""
+    spins = await db.spins.find({}, {"_id": 0}).sort("created_at", -1).limit(10).to_list(10)
+    
+    result = []
+    for spin in spins:
+        user = await db.users.find_one({"id": spin["user_id"]}, {"_id": 0})
+        prize = await db.prizes.find_one({"id": spin["prize_id"]}, {"_id": 0})
+        site = await db.sites.find_one({"id": prize["site_id"]}, {"_id": 0}) if prize else None
+        
+        # Mask user email for privacy
+        masked_email = user["email"][:3] + "***" + user["email"].split("@")[1] if user else "***"
+        
+        result.append({
+            "user_name": user["name"][:1] + "***" if user else "***",
+            "email": masked_email,
+            "prize_name": prize["name"] if prize else "Unknown",
+            "site_name": site["name"] if site else "Unknown",
+            "created_at": spin["created_at"]
+        })
+    
+    return result
+
 # Admin endpoints
 @api_router.get("/admin/spins")
 async def get_all_spins(admin: User = Depends(get_admin_user)):
