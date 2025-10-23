@@ -26,6 +26,15 @@ const AdminPage = ({ user, logout }) => {
   const [showExtraSpinModal, setShowExtraSpinModal] = useState(false);
   const [showClearModal, setShowClearModal] = useState(false);
   const [selectedCollections, setSelectedCollections] = useState([]);
+  const [showCreateAdminModal, setShowCreateAdminModal] = useState(false);
+  const [newAdminData, setNewAdminData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    phone: "",
+    telegram_username: "",
+    password: "",
+  });
 
   const [prizeForm, setPrizeForm] = useState({
     name: "",
