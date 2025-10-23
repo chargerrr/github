@@ -521,6 +521,44 @@ async def update_user(user_id: str, update_data: dict, admin: User = Depends(get
         )
     return {"message": "User updated"}
 
+@api_router.patch("/admin/profile")
+async def update_admin_profile(update_data: dict, current_user: User = Depends(get_current_user)):
+    """Update current user's profile"""
+    allowed_fields = ["name", "surname", "email", "phone", "telegram_username"]
+    update_dict = {k: v for k, v in update_data.items() if k in allowed_fields and v}
+    
+    # Handle password separately
+    if "password" in update_data and update_data["password"]:
+        update_dict["password_hash"] = get_password_hash(update_data["password"])
+    
+    if update_dict:
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$set": update_dict}
+        )
+    
+    # Return updated user
+    updated_user = await db.users.find_one({"id": current_user.id}, {"_id": 0, "password_hash": 0})
+    return updated_user
+
+@api_router.post("/admin/create-admin")
+async def create_admin_user(user_data: UserRegister, admin: User = Depends(get_admin_user)):
+    """Create a new admin user"""
+    existing = await db.users.find_one({"email": user_data.email}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    user = User(
+        **user_data.model_dump(exclude={"password"}),
+        password_hash=get_password_hash(user_data.password),
+        is_admin=True  # Make them admin by default
+    )
+    
+    doc = user.model_dump()
+    await db.users.insert_one(doc)
+    
+    return {"message": "Admin user created", "user_id": user.id}
+
 @api_router.get("/admin/users/export")
 async def export_users(admin: User = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(10000)
