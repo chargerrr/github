@@ -39,6 +39,7 @@ const AdminPage = ({ user, logout }) => {
     name: "",
     logo_url: "",
     welcome_bonus: "",
+    website_url: "",
     category: "other",
     order: 999,
   });
