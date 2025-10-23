@@ -143,7 +143,7 @@ const AdminPage = ({ user, logout }) => {
       
       toast.success("Site eklendi!");
       setShowSiteModal(false);
-      setSiteForm({ name: "", logo_url: "", welcome_bonus: "", category: "other", order: 999 });
+      setSiteForm({ name: "", logo_url: "", welcome_bonus: "", website_url: "", category: "other", order: 999 });
       setLogoFile(null);
       fetchData();
     } catch (error) {
