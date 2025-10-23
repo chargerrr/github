@@ -19,10 +19,13 @@ const AdminPage = ({ user, logout }) => {
   const [spins, setSpins] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [rules, setRules] = useState([]);
+  const [dbStats, setDbStats] = useState({});
   const [showPrizeModal, setShowPrizeModal] = useState(false);
   const [showSiteModal, setShowSiteModal] = useState(false);
   const [showRuleModal, setShowRuleModal] = useState(false);
   const [showExtraSpinModal, setShowExtraSpinModal] = useState(false);
+  const [showClearModal, setShowClearModal] = useState(false);
+  const [selectedCollections, setSelectedCollections] = useState([]);
 
   const [prizeForm, setPrizeForm] = useState({
     name: "",
