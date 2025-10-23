@@ -163,6 +163,59 @@ const SettingsPage = ({ user, logout }) => {
           </CardContent>
         </Card>
 
+        <Card className="bg-gray-800/80 border-yellow-400/30">
+          <CardHeader>
+            <CardTitle className="text-yellow-400">Sosyal Medya Linkleri</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-white">Facebook URL</Label>
+              <Input
+                value={settings.facebook_url}
+                onChange={(e) => setSettings({ ...settings, facebook_url: e.target.value })}
+                className="bg-gray-700 text-white border-gray-600"
+                placeholder="https://facebook.com/kazandirancark"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Twitter URL</Label>
+              <Input
+                value={settings.twitter_url}
+                onChange={(e) => setSettings({ ...settings, twitter_url: e.target.value })}
+                className="bg-gray-700 text-white border-gray-600"
+                placeholder="https://twitter.com/kazandirancark"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Instagram URL</Label>
+              <Input
+                value={settings.instagram_url}
+                onChange={(e) => setSettings({ ...settings, instagram_url: e.target.value })}
+                className="bg-gray-700 text-white border-gray-600"
+                placeholder="https://instagram.com/kazandirancark"
+              />
+            </div>
+            <div>
+              <Label className="text-white">YouTube URL</Label>
+              <Input
+                value={settings.youtube_url}
+                onChange={(e) => setSettings({ ...settings, youtube_url: e.target.value })}
+                className="bg-gray-700 text-white border-gray-600"
+                placeholder="https://youtube.com/@kazandirancark"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Telegram URL</Label>
+              <Input
+                value={settings.telegram_url}
+                onChange={(e) => setSettings({ ...settings, telegram_url: e.target.value })}
+                className="bg-gray-700 text-white border-gray-600"
+                placeholder="https://t.me/kazandirancark"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
         <Button
           onClick={handleSave}
           className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold text-lg py-6"
