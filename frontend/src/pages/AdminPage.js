@@ -588,7 +588,168 @@ const AdminPage = ({ user, logout }) => {
             ))}
           </div>
         </TabsContent>
+
+        {/* Database Tab */}
+        <TabsContent value="database" data-testid="database-content">
+          <div className="space-y-6">
+            <Card className="bg-gray-800/80 border-yellow-400/30">
+              <CardHeader>
+                <CardTitle className="text-yellow-400">Veritabanı İstatistikleri</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold text-white">{dbStats.users || 0}</p>
+                    <p className="text-gray-400 text-sm">Kullanıcılar</p>
+                  </div>
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold text-white">{dbStats.sites || 0}</p>
+                    <p className="text-gray-400 text-sm">Siteler</p>
+                  </div>
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold text-white">{dbStats.prizes || 0}</p>
+                    <p className="text-gray-400 text-sm">Ödüller</p>
+                  </div>
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold text-white">{dbStats.spins || 0}</p>
+                    <p className="text-gray-400 text-sm">Çevirilen Çarklar</p>
+                  </div>
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold text-white">{dbStats.rules || 0}</p>
+                    <p className="text-gray-400 text-sm">Kurallar</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800/80 border-red-500/30">
+              <CardHeader>
+                <CardTitle className="text-red-500 flex items-center gap-2">
+                  <Trash2 size={24} /> Tehlikeli Bölge - Veritabanı Temizleme
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-white mb-4">
+                  ⚠️ Dikkat: Bu işlem geri alınamaz! Seçili koleksiyonlardaki tüm veriler silinecektir.
+                </p>
+                <Button
+                  onClick={() => setShowClearModal(true)}
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold"
+                  data-testid="open-clear-modal-btn"
+                >
+                  <Trash2 className="mr-2" size={18} /> Veritabanını Temizle
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
       </Tabs>
+
+      {/* Database Clear Modal */}
+      <Dialog open={showClearModal} onOpenChange={setShowClearModal}>
+        <DialogContent className="bg-gray-900 border-red-500" data-testid="clear-modal">
+          <DialogHeader>
+            <DialogTitle className="text-red-500 text-2xl flex items-center gap-2">
+              <Trash2 /> Veritabanı Temizleme
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-white">Silmek istediğiniz koleksiyonları seçin:</p>
+            
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 cursor-pointer" onClick={() => toggleCollection('users')}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedCollections.includes('users')}
+                  onChange={() => toggleCollection('users')}
+                  className="w-5 h-5"
+                />
+                <div className="flex-1">
+                  <p className="text-white font-semibold">Kullanıcılar</p>
+                  <p className="text-gray-400 text-sm">Admin hariç tüm kullanıcılar silinecek ({(dbStats.users || 0) - 1} kayıt)</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 cursor-pointer" onClick={() => toggleCollection('sites')}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedCollections.includes('sites')}
+                  onChange={() => toggleCollection('sites')}
+                  className="w-5 h-5"
+                />
+                <div className="flex-1">
+                  <p className="text-white font-semibold">Siteler</p>
+                  <p className="text-gray-400 text-sm">Tüm bahis siteleri silinecek ({dbStats.sites || 0} kayıt)</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 cursor-pointer" onClick={() => toggleCollection('prizes')}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedCollections.includes('prizes')}
+                  onChange={() => toggleCollection('prizes')}
+                  className="w-5 h-5"
+                />
+                <div className="flex-1">
+                  <p className="text-white font-semibold">Ödüller</p>
+                  <p className="text-gray-400 text-sm">Tüm ödüller silinecek ({dbStats.prizes || 0} kayıt)</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 cursor-pointer" onClick={() => toggleCollection('spins')}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedCollections.includes('spins')}
+                  onChange={() => toggleCollection('spins')}
+                  className="w-5 h-5"
+                />
+                <div className="flex-1">
+                  <p className="text-white font-semibold">Çevirilen Çarklar</p>
+                  <p className="text-gray-400 text-sm">Tüm çark kayıtları silinecek ({dbStats.spins || 0} kayıt)</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 cursor-pointer" onClick={() => toggleCollection('rules')}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedCollections.includes('rules')}
+                  onChange={() => toggleCollection('rules')}
+                  className="w-5 h-5"
+                />
+                <div className="flex-1">
+                  <p className="text-white font-semibold">Kurallar</p>
+                  <p className="text-gray-400 text-sm">Tüm kurallar silinecek ({dbStats.rules || 0} kayıt)</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                onClick={handleClearDatabase}
+                disabled={selectedCollections.length === 0}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
+                data-testid="confirm-clear-btn"
+              >
+                <Trash2 className="mr-2" /> Seçili Koleksiyonları Sil
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowClearModal(false);
+                  setSelectedCollections([]);
+                }}
+                variant="outline"
+                className="border-gray-600 text-gray-400"
+              >
+                İptal
+              </Button>
+            </div>
+
+            <p className="text-red-400 text-sm text-center">
+              ⚠️ Bu işlem geri alınamaz! Emin misiniz?
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Prize Modal */}
       <Dialog open={showPrizeModal} onOpenChange={setShowPrizeModal}>
