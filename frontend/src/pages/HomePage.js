@@ -23,7 +23,9 @@ const HomePage = ({ user, setUser, logout }) => {
   const [sites, setSites] = useState([]);
   const [rules, setRules] = useState([]);
   const [mySpins, setMySpins] = useState([]);
+  const [recentWinners, setRecentWinners] = useState([]);
   const wheelRef = useRef(null);
+  const canvasRef = useRef(null);
   const audioRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -39,10 +41,59 @@ const HomePage = ({ user, setUser, logout }) => {
     fetchPrizes();
     fetchSites();
     fetchRules();
+    fetchRecentWinners();
     if (user) {
       fetchMySpins();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (prizes.length > 0 && canvasRef.current) {
+      drawWheel();
+    }
+  }, [prizes]);
+
+  const drawWheel = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = canvas.width / 2 - 10;
+
+    // Take first 8 prizes for display
+    const displayPrizes = prizes.slice(0, 8);
+    const sliceAngle = (2 * Math.PI) / displayPrizes.length;
+
+    displayPrizes.forEach((prize, index) => {
+      const startAngle = index * sliceAngle;
+      const endAngle = startAngle + sliceAngle;
+
+      // Draw slice
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+      ctx.closePath();
+      
+      // Alternate colors
+      ctx.fillStyle = index % 2 === 0 ? '#8B0000' : '#FFD700';
+      ctx.fill();
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Draw text
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(startAngle + sliceAngle / 2);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = index % 2 === 0 ? '#FFD700' : '#000';
+      ctx.font = 'bold 14px Inter';
+      ctx.fillText(prize.name.substring(0, 20), radius / 1.5, 10);
+      ctx.restore();
+    });
+  };
 
   const fetchPrizes = async () => {
     try {
