@@ -700,29 +700,63 @@ const HomePage = ({ user, setUser, logout }) => {
             <DialogTitle className="text-yellow-400 text-2xl">🎉 Tebrikler! 🎉</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-purple-800/30 p-4 rounded-lg">
-              <p className="text-white text-lg font-bold mb-2">{wonPrize?.prize?.name}</p>
-              <p className="text-gray-300 mb-2">{wonPrize?.prize?.description}</p>
-              <p className="text-yellow-400 font-bold">Site: {wonPrize?.site?.name}</p>
+            <div className="bg-purple-800/30 p-6 rounded-lg space-y-3">
+              <p className="text-white text-xl font-bold text-center">{wonPrize?.prize?.name}</p>
+              <p className="text-gray-300 text-center">{wonPrize?.prize?.description}</p>
+              <div className="flex items-center justify-center gap-2 text-yellow-400 font-bold text-lg">
+                <Gift size={24} />
+                <span>Site: {wonPrize?.site?.name}</span>
+              </div>
             </div>
-            <p className="text-white">Bu ödül <span className="text-yellow-400 font-bold">{wonPrize?.site?.name}</span> hesabınıza gönderilecek. Lütfen bu sitedeki kullanıcı adınızı girin:</p>
-            <div>
-              <Label className="text-white">{wonPrize?.site?.name} Kullanıcı Adı</Label>
-              <Input
-                data-testid="site-username-input"
-                value={siteUsername}
-                onChange={(e) => setSiteUsername(e.target.value)}
-                className="bg-gray-800 text-white border-gray-700"
-                placeholder={`Örn: ${wonPrize?.site?.name?.toLowerCase()}_user123`}
-              />
+            
+            {wonPrize?.site?.website_url && (
+              <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 p-4 rounded-lg border-2 border-yellow-400/50">
+                <p className="text-white text-center mb-3">
+                  Henüz <span className="font-bold text-yellow-400">{wonPrize?.site?.name}</span> üyesi değil misiniz?
+                </p>
+                <a
+                  href={wonPrize?.site?.website_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button
+                    type="button"
+                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-gray-900 font-bold text-lg py-6"
+                    data-testid="visit-site-btn"
+                  >
+                    🎰 {wonPrize?.site?.name} Sitesine Git - Üye Ol
+                  </Button>
+                </a>
+                <p className="text-gray-400 text-sm text-center mt-2">
+                  Üye olduktan sonra aşağıya kullanıcı adınızı girin
+                </p>
+              </div>
+            )}
+            
+            <div className="border-t-2 border-gray-700 pt-4">
+              <p className="text-white mb-3">
+                Bu ödül <span className="text-yellow-400 font-bold">{wonPrize?.site?.name}</span> hesabınıza gönderilecek. 
+                Lütfen bu sitedeki kullanıcı adınızı girin:
+              </p>
+              <div>
+                <Label className="text-white">{wonPrize?.site?.name} Kullanıcı Adı</Label>
+                <Input
+                  data-testid="site-username-input"
+                  value={siteUsername}
+                  onChange={(e) => setSiteUsername(e.target.value)}
+                  className="bg-gray-800 text-white border-gray-700"
+                  placeholder={`Örn: ${wonPrize?.site?.name?.toLowerCase()}_user123`}
+                />
+              </div>
+              <Button
+                data-testid="confirm-username-btn"
+                onClick={submitSiteUsername}
+                className="w-full mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-6 text-lg"
+              >
+                ✅ Kullanıcı Adını Onayla ve Ödülü Al
+              </Button>
             </div>
-            <Button
-              data-testid="confirm-username-btn"
-              onClick={submitSiteUsername}
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
-            >
-              Kullanıcı Adını Onayla
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
