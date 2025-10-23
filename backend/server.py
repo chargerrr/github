@@ -67,6 +67,7 @@ class Site(BaseModel):
     name: str
     logo_url: Optional[str] = None
     welcome_bonus: Optional[str] = None
+    website_url: Optional[str] = None  # Site linki
     category: str = "other"  # main_sponsor, editor_choice, monthly, yearly, top_winners, other
     order: int = 999
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
@@ -75,6 +76,7 @@ class SiteCreate(BaseModel):
     name: str
     logo_url: Optional[str] = None
     welcome_bonus: Optional[str] = None
+    website_url: Optional[str] = None
     category: str = "other"
     order: int = 999
 
