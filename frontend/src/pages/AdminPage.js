@@ -322,6 +322,44 @@ const AdminPage = ({ user, logout }) => {
     }
   };
 
+  const handleToggleAdmin = async (userId, currentAdminStatus) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.patch(
+        `${API}/admin/users/${userId}`,
+        { is_admin: !currentAdminStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(currentAdminStatus ? "Admin yetkisi kaldırıldı" : "Admin yetkisi verildi");
+      fetchData();
+    } catch (error) {
+      toast.error("İşlem başarısız");
+    }
+  };
+
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(`${API}/admin/create-admin`, newAdminData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Yeni admin kullanıcısı oluşturuldu!");
+      setShowCreateAdminModal(false);
+      setNewAdminData({
+        name: "",
+        surname: "",
+        email: "",
+        phone: "",
+        telegram_username: "",
+        password: "",
+      });
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Admin oluşturulamadı");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-6">
       <header className="mb-8 flex justify-between items-center">
