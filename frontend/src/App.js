@@ -59,6 +59,10 @@ function App() {
             path="/admin"
             element={user?.is_admin ? <AdminPage user={user} logout={logout} /> : <Navigate to="/" />}
           />
+          <Route
+            path="/settings"
+            element={user?.is_admin ? <SettingsPage user={user} logout={logout} /> : <Navigate to="/" />}
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
