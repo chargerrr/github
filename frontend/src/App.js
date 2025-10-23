@@ -3,6 +3,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "@/pages/HomePage";
 import AdminPage from "@/pages/AdminPage";
+import SettingsPage from "@/pages/SettingsPage";
 import { Toaster } from "@/components/ui/sonner";
 
 function App() {
