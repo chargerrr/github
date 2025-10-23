@@ -66,6 +66,10 @@ function App() {
               path="/settings"
               element={user?.is_admin ? <SettingsPage user={user} logout={logout} /> : <Navigate to="/" />}
             />
+            <Route
+              path="/profile"
+              element={user ? <ProfilePage user={user} setUser={setUser} logout={logout} /> : <Navigate to="/" />}
+            />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-right" />
