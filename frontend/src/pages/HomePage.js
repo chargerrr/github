@@ -330,7 +330,9 @@ const HomePage = ({ user, setUser, logout }) => {
         {/* Wheel */}
         <div className="wheel-container mb-12" data-testid="wheel-container">
           <div className="wheel-pointer"></div>
-          <div ref={wheelRef} className={`wheel ${spinning ? "spinning" : ""}`} data-testid="wheel"></div>
+          <div ref={wheelRef} className={`wheel ${spinning ? "spinning" : ""}`} data-testid="wheel">
+            <canvas ref={canvasRef} width="484" height="484"></canvas>
+          </div>
           <div
             className="wheel-center"
             onClick={handleSpin}
@@ -340,6 +342,38 @@ const HomePage = ({ user, setUser, logout }) => {
             <Trophy className="text-white" size={40} />
           </div>
         </div>
+
+        {/* Recent Winners */}
+        {recentWinners.length > 0 && (
+          <div className="max-w-4xl w-full glass-card rounded-2xl p-6 mb-12" data-testid="recent-winners-section">
+            <h3 className="text-2xl font-bold text-yellow-400 mb-4 text-center">
+              🎊 Son Kazananlar
+            </h3>
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {recentWinners.map((winner, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-colors"
+                  data-testid={`winner-${index}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-yellow-400/20 flex items-center justify-center">
+                      <Trophy className="text-yellow-400" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold">{winner.user_name}</p>
+                      <p className="text-gray-400 text-sm">{winner.email}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-yellow-400 font-bold">{winner.prize_name}</p>
+                    <p className="text-gray-400 text-sm">{winner.site_name}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* My Prizes */}
         {user && mySpins.length > 0 && (
