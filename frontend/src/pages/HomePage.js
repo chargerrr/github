@@ -24,6 +24,7 @@ const HomePage = ({ user, setUser, logout }) => {
   const [rules, setRules] = useState([]);
   const [mySpins, setMySpins] = useState([]);
   const [recentWinners, setRecentWinners] = useState([]);
+  const [settings, setSettings] = useState({});
   const wheelRef = useRef(null);
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
