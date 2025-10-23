@@ -90,6 +90,11 @@ class SiteSettings(BaseModel):
     partnership_phone: str = "+90 555 123 4567"
     meta_keywords: str = "çark çevir, ödül kazan, bahis siteleri, bonus"
     meta_description: str = "Kazandıran Çark ile şansınızı deneyin! Bahis sitelerinden büyük ödüller kazanın."
+    facebook_url: Optional[str] = None
+    twitter_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    youtube_url: Optional[str] = None
+    telegram_url: Optional[str] = None
     
 class SettingsUpdate(BaseModel):
     site_title: Optional[str] = None
@@ -99,6 +104,11 @@ class SettingsUpdate(BaseModel):
     partnership_phone: Optional[str] = None
     meta_keywords: Optional[str] = None
     meta_description: Optional[str] = None
+    facebook_url: Optional[str] = None
+    twitter_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    youtube_url: Optional[str] = None
+    telegram_url: Optional[str] = None
 
 class Rule(BaseModel):
     model_config = ConfigDict(extra="ignore")
