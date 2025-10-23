@@ -122,6 +122,15 @@ const HomePage = ({ user, setUser, logout }) => {
     }
   };
 
+  const fetchRecentWinners = async () => {
+    try {
+      const response = await axios.get(`${API}/recent-winners`);
+      setRecentWinners(response.data);
+    } catch (error) {
+      console.error("Error fetching recent winners:", error);
+    }
+  };
+
   const fetchMySpins = async () => {
     try {
       const token = localStorage.getItem("token");
