@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Home, Gift, Globe, Award, Users, Plus, Trash2, Check, X } from "lucide-react";
+import { Home, Gift, Globe, Award, Users, Plus, Trash2, Check, X, User } from "lucide-react";
 import axios from "axios";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
