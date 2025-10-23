@@ -599,6 +599,13 @@ const AdminPage = ({ user, logout }) => {
         <TabsContent value="users" data-testid="users-content">
           <div className="mb-4 flex gap-4">
             <Button
+              data-testid="create-admin-btn"
+              onClick={() => setShowCreateAdminModal(true)}
+              className="bg-green-600 hover:bg-green-700 text-white font-bold"
+            >
+              <Plus className="mr-2" size={18} /> Yeni Admin Ekle
+            </Button>
+            <Button
               data-testid="grant-extra-spins-btn"
               onClick={() => setShowExtraSpinModal(true)}
               className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold"
@@ -619,8 +626,19 @@ const AdminPage = ({ user, logout }) => {
               <Card key={u.id} className="bg-gray-800/80 border-yellow-400/30" data-testid={`user-card-${index}`}>
                 <CardHeader>
                   <CardTitle className="text-yellow-400 flex justify-between items-center">
-                    <span>{u.name} {u.surname}</span>
+                    <span className="flex items-center gap-2">
+                      {u.name} {u.surname}
+                      {u.is_admin && <span className="text-xs bg-purple-600 px-2 py-1 rounded">👑 Admin</span>}
+                    </span>
                     <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleToggleAdmin(u.id, u.is_admin)}
+                        className={u.is_admin ? "bg-red-600 hover:bg-red-700" : "bg-purple-600 hover:bg-purple-700"}
+                        data-testid={`toggle-admin-${index}`}
+                      >
+                        {u.is_admin ? "Admin Kaldır" : "Admin Yap"}
+                      </Button>
                       <Button
                         size="sm"
                         onClick={() => handleResetDailySpin(u.id)}
