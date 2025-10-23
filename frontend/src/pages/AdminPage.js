@@ -65,12 +65,13 @@ const AdminPage = ({ user, logout }) => {
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     try {
-      const [prizesRes, sitesRes, spinsRes, usersRes, rulesRes] = await Promise.all([
+      const [prizesRes, sitesRes, spinsRes, usersRes, rulesRes, statsRes] = await Promise.all([
         axios.get(`${API}/prizes`, config),
         axios.get(`${API}/sites`, config),
         axios.get(`${API}/admin/spins`, config),
         axios.get(`${API}/admin/users`, config),
         axios.get(`${API}/rules`, config),
+        axios.get(`${API}/admin/database/stats`, config),
       ]);
 
       setPrizes(prizesRes.data);
@@ -78,6 +79,7 @@ const AdminPage = ({ user, logout }) => {
       setSpins(spinsRes.data);
       setAllUsers(usersRes.data);
       setRules(rulesRes.data);
+      setDbStats(statsRes.data);
     } catch (error) {
       toast.error("Veri yüklenemedi");
     }
