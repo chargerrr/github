@@ -429,43 +429,121 @@ const HomePage = ({ user, setUser, logout }) => {
           </div>
         )}
 
-        {/* Partner Sites Section */}
+        {/* Partner Sites Section - Categorized */}
         {sites.length > 0 && (
           <div className="max-w-6xl w-full mb-12" data-testid="partner-sites-section">
-            <h3 className="text-3xl font-bold text-yellow-400 mb-8 text-center glow-text">
-              Partnerimiz Bahis Siteleri
+            {/* Main Sponsors */}
+            {sites.filter(s => s.category === 'main_sponsor').length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-3xl font-bold text-yellow-400 mb-6 text-center glow-text">
+                  ⭐ Ana Sponsorlar
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {sites.filter(s => s.category === 'main_sponsor').map((site, index) => (
+                    <SiteCard key={site.id} site={site} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Editor's Choice */}
+            {sites.filter(s => s.category === 'editor_choice').length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold text-yellow-400 mb-6 text-center">
+                  👑 Editörün Seçimi
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {sites.filter(s => s.category === 'editor_choice').map((site, index) => (
+                    <SiteCard key={site.id} site={site} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Monthly Sites */}
+            {sites.filter(s => s.category === 'monthly').length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold text-yellow-400 mb-6 text-center">
+                  🗓️ Ayın Siteleri
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {sites.filter(s => s.category === 'monthly').map((site, index) => (
+                    <SiteCard key={site.id} site={site} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Yearly Sites */}
+            {sites.filter(s => s.category === 'yearly').length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold text-yellow-400 mb-6 text-center">
+                  🏆 Yılın Siteleri
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {sites.filter(s => s.category === 'yearly').map((site, index) => (
+                    <SiteCard key={site.id} site={site} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Top Winners */}
+            {sites.filter(s => s.category === 'top_winners').length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold text-yellow-400 mb-6 text-center">
+                  💰 En Çok Kazandıran Siteler
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {sites.filter(s => s.category === 'top_winners').map((site, index) => (
+                    <SiteCard key={site.id} site={site} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Other Sites */}
+            {sites.filter(s => s.category === 'other' || !s.category).length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold text-yellow-400 mb-6 text-center">
+                  📌 Diğer Siteler
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {sites.filter(s => s.category === 'other' || !s.category).map((site, index) => (
+                    <SiteCard key={site.id} site={site} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Partnership Section */}
+        {settings.partnership_text && (
+          <div className="max-w-4xl w-full glass-card rounded-2xl p-8 mb-12" data-testid="partnership-section">
+            <h3 className="text-3xl font-bold text-yellow-400 mb-6 text-center">
+              🤝 İş Birliği
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {sites.map((site, index) => (
-                <Card 
-                  key={site.id} 
-                  className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-yellow-400/30 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer"
-                  data-testid={`site-card-${index}`}
-                >
-                  <CardContent className="p-6 flex flex-col items-center justify-center text-center space-y-3">
-                    <div className="w-full h-16 flex items-center justify-center mb-2">
-                      <img 
-                        src={site.logo_url} 
-                        alt={site.name} 
-                        className="max-w-full max-h-full object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'block';
-                        }}
-                      />
-                      <div style={{display: 'none'}} className="text-xl font-bold text-yellow-400">
-                        {site.name}
-                      </div>
-                    </div>
-                    <h4 className="text-lg font-bold text-white">{site.name}</h4>
-                    {site.welcome_bonus && (
-                      <div className="bg-yellow-400/20 px-3 py-1.5 rounded-full">
-                        <p className="text-yellow-400 font-semibold text-sm">{site.welcome_bonus}</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="text-center space-y-4">
+              <p className="text-white text-lg">{settings.partnership_text}</p>
+              <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+                {settings.partnership_email && (
+                  <a 
+                    href={`mailto:${settings.partnership_email}`}
+                    className="text-yellow-400 hover:text-yellow-300 font-semibold"
+                  >
+                    📧 {settings.partnership_email}
+                  </a>
+                )}
+                {settings.partnership_phone && (
+                  <a 
+                    href={`tel:${settings.partnership_phone}`}
+                    className="text-yellow-400 hover:text-yellow-300 font-semibold"
+                  >
+                    📞 {settings.partnership_phone}
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         )}
