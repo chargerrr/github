@@ -5,6 +5,7 @@ import { HelmetProvider } from "react-helmet-async";
 import HomePage from "@/pages/HomePage";
 import AdminPage from "@/pages/AdminPage";
 import SettingsPage from "@/pages/SettingsPage";
+import ProfilePage from "@/pages/ProfilePage";
 import { Toaster } from "@/components/ui/sonner";
 
 function App() {
