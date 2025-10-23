@@ -526,6 +526,11 @@ async def export_users(admin: User = Depends(get_admin_user)):
 
 app.include_router(api_router)
 
+# Mount uploads directory
+upload_dir = Path("/app/backend/uploads")
+upload_dir.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(upload_dir)), name="uploads")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
