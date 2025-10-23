@@ -199,6 +199,59 @@ const AdminPage = ({ user, logout }) => {
     }
   };
 
+  const handleResetDailySpin = async (userId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.patch(
+        `${API}/admin/users/${userId}`,
+        { daily_spin_used: false },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Günlük çark sıfırlandı!");
+      fetchData();
+    } catch (error) {
+      toast.error("İşlem başarısız");
+    }
+  };
+
+  const handleExportUsers = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(`${API}/admin/users/export`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      // Convert to CSV
+      const users = response.data;
+      const headers = ["ID", "Ad", "Soyad", "Email", "Telefon", "Telegram", "Ekstra Çark", "Admin", "Kayıt Tarihi"];
+      const csvContent = [
+        headers.join(","),
+        ...users.map(u => [
+          u.id,
+          u.name,
+          u.surname,
+          u.email,
+          u.phone,
+          u.telegram_username,
+          u.extra_spins,
+          u.is_admin ? "Evet" : "Hayır",
+          u.created_at
+        ].join(","))
+      ].join("\n");
+      
+      // Download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `users_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      
+      toast.success("Kullanıcılar export edildi!");
+    } catch (error) {
+      toast.error("Export başarısız");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-6">
       <header className="mb-8 flex justify-between items-center">
