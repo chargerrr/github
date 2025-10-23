@@ -133,6 +133,15 @@ const HomePage = ({ user, setUser, logout }) => {
     }
   };
 
+  const fetchSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/settings`);
+      setSettings(response.data);
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+    }
+  };
+
   const fetchMySpins = async () => {
     try {
       const token = localStorage.getItem("token");
