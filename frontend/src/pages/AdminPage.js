@@ -618,7 +618,7 @@ const AdminPage = ({ user, logout }) => {
 
       {/* Site Modal */}
       <Dialog open={showSiteModal} onOpenChange={setShowSiteModal}>
-        <DialogContent className="bg-gray-900 border-yellow-400" data-testid="site-modal">
+        <DialogContent className="bg-gray-900 border-yellow-400 max-h-[90vh] overflow-y-auto" data-testid="site-modal">
           <DialogHeader>
             <DialogTitle className="text-yellow-400 text-2xl">Yeni Site Ekle</DialogTitle>
           </DialogHeader>
@@ -635,12 +635,19 @@ const AdminPage = ({ user, logout }) => {
               />
             </div>
             <div>
-              <Label className="text-white">Logo URL</Label>
+              <Label className="text-white">Logo Yükle</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setLogoFile(e.target.files[0])}
+                className="bg-gray-800 text-white border-gray-700"
+              />
+              <p className="text-gray-400 text-sm mt-1">veya URL girin:</p>
               <Input
                 data-testid="site-logo-input"
                 value={siteForm.logo_url}
                 onChange={(e) => setSiteForm({ ...siteForm, logo_url: e.target.value })}
-                className="bg-gray-800 text-white border-gray-700"
+                className="bg-gray-800 text-white border-gray-700 mt-2"
                 placeholder="https://..."
               />
             </div>
@@ -652,6 +659,32 @@ const AdminPage = ({ user, logout }) => {
                 onChange={(e) => setSiteForm({ ...siteForm, welcome_bonus: e.target.value })}
                 className="bg-gray-800 text-white border-gray-700"
                 placeholder="500 TL Deneme Bonusu"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Kategori</Label>
+              <Select value={siteForm.category} onValueChange={(val) => setSiteForm({ ...siteForm, category: val })}>
+                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                  <SelectValue placeholder="Kategori seçin" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 text-white">
+                  <SelectItem value="main_sponsor">Ana Sponsorlar</SelectItem>
+                  <SelectItem value="editor_choice">Editörün Seçimi</SelectItem>
+                  <SelectItem value="monthly">Ayın Siteleri</SelectItem>
+                  <SelectItem value="yearly">Yılın Siteleri</SelectItem>
+                  <SelectItem value="top_winners">En Çok Kazandıran</SelectItem>
+                  <SelectItem value="other">Diğer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-white">Sıra</Label>
+              <Input
+                type="number"
+                min="0"
+                value={siteForm.order}
+                onChange={(e) => setSiteForm({ ...siteForm, order: parseInt(e.target.value) })}
+                className="bg-gray-800 text-white border-gray-700"
               />
             </div>
             <Button
