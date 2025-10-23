@@ -863,6 +863,17 @@ const AdminPage = ({ user, logout }) => {
               />
             </div>
             <div>
+              <Label className="text-white">Site Linki (URL)</Label>
+              <Input
+                data-testid="site-url-input"
+                type="url"
+                value={siteForm.website_url}
+                onChange={(e) => setSiteForm({ ...siteForm, website_url: e.target.value })}
+                className="bg-gray-800 text-white border-gray-700"
+                placeholder="https://www.sekabet.com"
+              />
+            </div>
+            <div>
               <Label className="text-white">Kategori</Label>
               <Select value={siteForm.category} onValueChange={(val) => setSiteForm({ ...siteForm, category: val })}>
                 <SelectTrigger className="bg-gray-800 text-white border-gray-700">
