@@ -360,6 +360,9 @@ const AdminPage = ({ user, logout }) => {
           <TabsTrigger value="users" data-testid="users-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Users className="mr-2" size={18} /> Kullanıcılar
           </TabsTrigger>
+          <TabsTrigger value="database" data-testid="database-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
+            <Trash2 className="mr-2" size={18} /> Veritabanı
+          </TabsTrigger>
         </TabsList>
 
         {/* Spins Tab */}
