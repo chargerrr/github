@@ -268,6 +268,23 @@ const HomePage = ({ user, setUser, logout }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 relative overflow-hidden">
+      <Helmet>
+        <title>{settings.site_title || "Kazandıran Çark"}</title>
+        <meta name="description" content={settings.meta_description || "Şansınızı deneyin ve büyük ödüller kazanın!"} />
+        <meta name="keywords" content={settings.meta_keywords || "çark, ödül, bahis, bonus"} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={settings.site_title || "Kazandıran Çark"} />
+        <meta property="og:description" content={settings.meta_description || "Şansınızı deneyin ve büyük ödüller kazanın!"} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={window.location.href} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={settings.site_title || "Kazandıran Çark"} />
+        <meta name="twitter:description" content={settings.meta_description || "Şansınızı deneyin ve büyük ödüller kazanın!"} />
+      </Helmet>
+      
       {/* Animated background stars */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(50)].map((_, i) => (
