@@ -413,6 +413,23 @@ async def get_all_users(admin: User = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
     return users
 
+@api_router.patch("/admin/users/{user_id}")
+async def update_user(user_id: str, update_data: dict, admin: User = Depends(get_admin_user)):
+    allowed_fields = ["extra_spins", "is_admin", "daily_spin_used"]
+    update_dict = {k: v for k, v in update_data.items() if k in allowed_fields}
+    
+    if update_dict:
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": update_dict}
+        )
+    return {"message": "User updated"}
+
+@api_router.get("/admin/users/export")
+async def export_users(admin: User = Depends(get_admin_user)):
+    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(10000)
+    return users
+
 app.include_router(api_router)
 
 app.add_middleware(
