@@ -709,6 +709,58 @@ const AdminPage = ({ user, logout }) => {
           </div>
         </TabsContent>
 
+        {/* VIP Conditions Tab */}
+        <TabsContent value="vip-conditions" data-testid="vip-conditions-content">
+          <div className="mb-4">
+            <Button
+              data-testid="add-vip-condition-btn"
+              onClick={() => setShowVipConditionModal(true)}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold"
+            >
+              <Plus className="mr-2" size={18} /> Yeni VIP Koşul Ekle
+            </Button>
+          </div>
+          <div className="grid gap-4">
+            {vipConditions.map((condition, index) => (
+              <Card key={condition.id} className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-purple-400/50" data-testid={`vip-condition-card-${index}`}>
+                <CardHeader>
+                  <CardTitle className="text-purple-300 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <Star size={20} className="text-yellow-400" />
+                      <span>{condition.description}</span>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <span className={`text-xs px-3 py-1 rounded-full ${condition.is_active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                        {condition.is_active ? 'Aktif' : 'Pasif'}
+                      </span>
+                      <Button
+                        data-testid={`delete-vip-condition-${index}`}
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteVipCondition(condition.id)}
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white space-y-2">
+                  <p><strong>Site:</strong> {condition.site?.name || 'Bilinmiyor'}</p>
+                  <p><strong>Koşul Tipi:</strong> {condition.condition_type}</p>
+                  <p><strong>Koşul Değeri:</strong> {condition.condition_value}</p>
+                  <p><strong>Verilen VIP Hak:</strong> {condition.spins_granted} çevirme</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          {vipConditions.length === 0 && (
+            <div className="text-center py-10 text-gray-400">
+              <Star size={48} className="mx-auto mb-4 opacity-50" />
+              <p>Henüz VIP koşul eklenmemiş</p>
+            </div>
+          )}
+        </TabsContent>
+
         {/* Rules Tab */}
         <TabsContent value="rules" data-testid="rules-content">
           <div className="mb-4">
