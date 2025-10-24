@@ -98,13 +98,17 @@ const AdminPage = ({ user, logout }) => {
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     try {
-      const [prizesRes, sitesRes, spinsRes, usersRes, rulesRes, statsRes] = await Promise.all([
+      const [prizesRes, sitesRes, spinsRes, usersRes, rulesRes, statsRes, vipConditionsRes, vipPrizesRes, vipUsersRes, vipStatsRes] = await Promise.all([
         axios.get(`${API}/prizes`, config),
         axios.get(`${API}/sites`, config),
         axios.get(`${API}/admin/spins`, config),
         axios.get(`${API}/admin/users`, config),
         axios.get(`${API}/rules`, config),
         axios.get(`${API}/admin/database/stats`, config),
+        axios.get(`${API}/admin/vip-conditions`, config),
+        axios.get(`${API}/vip-prizes`, config),
+        axios.get(`${API}/admin/vip-users`, config),
+        axios.get(`${API}/admin/vip-stats`, config),
       ]);
 
       setPrizes(prizesRes.data);
@@ -113,6 +117,10 @@ const AdminPage = ({ user, logout }) => {
       setAllUsers(usersRes.data);
       setRules(rulesRes.data);
       setDbStats(statsRes.data);
+      setVipConditions(vipConditionsRes.data);
+      setVipPrizes(vipPrizesRes.data);
+      setVipUsers(vipUsersRes.data);
+      setVipStats(vipStatsRes.data);
     } catch (error) {
       toast.error("Veri yüklenemedi");
     }
