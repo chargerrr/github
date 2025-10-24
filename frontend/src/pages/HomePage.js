@@ -47,6 +47,7 @@ const HomePage = ({ user, setUser, logout }) => {
 
   useEffect(() => {
     fetchPrizes();
+    fetchVipPrizes();
     fetchSites();
     fetchRules();
     fetchRecentWinners();
@@ -61,6 +62,12 @@ const HomePage = ({ user, setUser, logout }) => {
       drawWheel();
     }
   }, [prizes]);
+
+  useEffect(() => {
+    if (vipPrizes.length > 0 && vipCanvasRef.current) {
+      drawVipWheel();
+    }
+  }, [vipPrizes]);
 
   const drawWheel = () => {
     const canvas = canvasRef.current;
