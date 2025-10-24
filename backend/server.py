@@ -620,7 +620,7 @@ async def export_users(admin: User = Depends(get_admin_user)):
 # Database Management endpoints
 @api_router.post("/admin/database/clear")
 async def clear_database(collections: List[str], admin: User = Depends(get_admin_user)):
-    """Clear specified collections. Options: users, sites, prizes, spins, rules"""
+    """Clear specified collections. Options: users, sites, prizes, spins, rules, vip_conditions, vip_grants"""
     deleted_counts = {}
     
     if "users" in collections:
@@ -643,6 +643,14 @@ async def clear_database(collections: List[str], admin: User = Depends(get_admin
     if "rules" in collections:
         result = await db.rules.delete_many({})
         deleted_counts["rules"] = result.deleted_count
+    
+    if "vip_conditions" in collections:
+        result = await db.vip_conditions.delete_many({})
+        deleted_counts["vip_conditions"] = result.deleted_count
+    
+    if "vip_grants" in collections:
+        result = await db.vip_grants.delete_many({})
+        deleted_counts["vip_grants"] = result.deleted_count
     
     return {"message": "Collections cleared", "deleted": deleted_counts}
 
