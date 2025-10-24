@@ -613,6 +613,21 @@ class KazandiranCarkAPITester:
         self.test_wheel_spin()
         self.test_get_my_spins()
 
+        # VIP System Tests
+        print("\n💎 VIP System Tests:")
+        self.test_get_vip_conditions_public()
+        self.test_get_vip_conditions_admin()
+        self.test_create_vip_condition()
+        self.test_get_vip_prizes()
+        self.test_create_vip_prize()
+        self.test_grant_vip_spins()
+        self.test_update_user_vip_spins()
+        self.test_vip_spin_preview()
+        self.test_get_vip_users()
+        self.test_get_vip_stats()
+        self.test_database_stats_vip()
+        self.test_delete_vip_condition()
+
         # Print summary
         print("\n" + "=" * 60)
         print(f"📊 Test Summary: {self.tests_passed}/{self.tests_run} tests passed")
