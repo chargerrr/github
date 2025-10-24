@@ -120,6 +120,15 @@ const HomePage = ({ user, setUser, logout }) => {
     }
   };
 
+  const fetchVipPrizes = async () => {
+    try {
+      const response = await axios.get(`${API}/vip-prizes`);
+      setVipPrizes(response.data);
+    } catch (error) {
+      console.error("Error fetching VIP prizes:", error);
+    }
+  };
+
   const fetchSites = async () => {
     try {
       const response = await axios.get(`${API}/sites`);
