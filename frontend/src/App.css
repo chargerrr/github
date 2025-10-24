@@ -89,11 +89,12 @@ h1, h2, h3 {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   z-index: 10;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .wheel-center:hover {
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 4px 30px rgba(255, 215, 0, 0.6);
 }
 
 .wheel-pointer {
@@ -108,6 +109,16 @@ h1, h2, h3 {
   border-top: 40px solid #FFD700;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
   z-index: 11;
+  animation: pointer-glow-normal 2s ease-in-out infinite;
+}
+
+@keyframes pointer-glow-normal {
+  0%, 100% {
+    filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 4px 16px rgba(255, 215, 0, 0.9));
+  }
 }
 
 .particle {
