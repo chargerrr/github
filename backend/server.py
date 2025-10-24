@@ -47,6 +47,7 @@ class User(BaseModel):
     daily_spin_used: bool = False
     last_spin_date: Optional[str] = None
     extra_spins: int = 0
+    vip_spins: int = 0  # VIP çark hakları
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class UserRegister(BaseModel):
