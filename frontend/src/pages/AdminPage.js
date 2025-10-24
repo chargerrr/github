@@ -494,14 +494,23 @@ const AdminPage = ({ user, logout }) => {
           <TabsTrigger value="prizes" data-testid="prizes-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Gift className="mr-2" size={18} /> Ödüller
           </TabsTrigger>
+          <TabsTrigger value="vip-prizes" data-testid="vip-prizes-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
+            <Trophy className="mr-2" size={18} /> VIP Ödüller
+          </TabsTrigger>
           <TabsTrigger value="sites" data-testid="sites-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Globe className="mr-2" size={18} /> Siteler
+          </TabsTrigger>
+          <TabsTrigger value="vip-conditions" data-testid="vip-conditions-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
+            <Star className="mr-2" size={18} /> VIP Kurallar
           </TabsTrigger>
           <TabsTrigger value="rules" data-testid="rules-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Award className="mr-2" size={18} /> Kurallar
           </TabsTrigger>
           <TabsTrigger value="users" data-testid="users-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Users className="mr-2" size={18} /> Kullanıcılar
+          </TabsTrigger>
+          <TabsTrigger value="vip-users" data-testid="vip-users-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
+            <Star className="mr-2" size={18} /> VIP Kullanıcılar
           </TabsTrigger>
           <TabsTrigger value="database" data-testid="database-tab" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-900">
             <Trash2 className="mr-2" size={18} /> Veritabanı
