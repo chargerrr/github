@@ -49,6 +49,22 @@ const AdminPage = ({ user, logout }) => {
     description: "",
     image_url: "",
     weight: 1,
+    is_vip: false,
+  });
+
+  const [vipConditionForm, setVipConditionForm] = useState({
+    site_id: "",
+    condition_type: "registration",
+    condition_value: "",
+    description: "",
+    spins_granted: 1,
+    is_active: true,
+  });
+
+  const [vipSpinGrantForm, setVipSpinGrantForm] = useState({
+    user_id: "",
+    condition_id: "",
+    proof: "",
   });
 
   const [siteForm, setSiteForm] = useState({
