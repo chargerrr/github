@@ -277,9 +277,13 @@ const HomePage = ({ user, setUser, logout }) => {
     setSpinning(true);
     playSpinSound();
 
-    const rotations = 5 + Math.random() * 3;
-    const degrees = rotations * 360;
+    // More realistic spinning: 8-10 full rotations with easing
+    const rotations = 8 + Math.random() * 2;
+    const extraDegrees = Math.random() * 360; // Random final position
+    const degrees = rotations * 360 + extraDegrees;
+    
     if (wheelRef.current) {
+      wheelRef.current.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.3, 0.99)';
       wheelRef.current.style.transform = `rotate(${degrees}deg)`;
     }
 
@@ -306,9 +310,13 @@ const HomePage = ({ user, setUser, logout }) => {
         } catch (error) {
           console.error("Failed to refresh user data:", error);
         }
-      }, 4000);
+      }, 5500); // Increased timeout to match animation duration
     } catch (error) {
       setSpinning(false);
+      if (wheelRef.current) {
+        wheelRef.current.style.transition = '';
+        wheelRef.current.style.transform = 'rotate(0deg)';
+      }
       toast.error(error.response?.data?.detail || "Çark çevrilemedi");
     }
   };
@@ -327,9 +335,13 @@ const HomePage = ({ user, setUser, logout }) => {
     setVipSpinning(true);
     playSpinSound();
 
-    const rotations = 5 + Math.random() * 3;
-    const degrees = rotations * 360;
+    // More realistic spinning: 8-10 full rotations with easing
+    const rotations = 8 + Math.random() * 2;
+    const extraDegrees = Math.random() * 360; // Random final position
+    const degrees = rotations * 360 + extraDegrees;
+    
     if (vipWheelRef.current) {
+      vipWheelRef.current.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.3, 0.99)';
       vipWheelRef.current.style.transform = `rotate(${degrees}deg)`;
     }
 
@@ -357,9 +369,13 @@ const HomePage = ({ user, setUser, logout }) => {
         } catch (error) {
           console.error("Failed to refresh user data:", error);
         }
-      }, 4000);
+      }, 5500); // Increased timeout to match animation duration
     } catch (error) {
       setVipSpinning(false);
+      if (vipWheelRef.current) {
+        vipWheelRef.current.style.transition = '';
+        vipWheelRef.current.style.transform = 'rotate(0deg)';
+      }
       toast.error(error.response?.data?.detail || "VIP çark çevrilemedi");
     }
   };
