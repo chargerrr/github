@@ -371,7 +371,8 @@ async def get_prizes(is_vip: Optional[bool] = None):
         query["is_vip"] = is_vip
     else:
         # By default, return only non-VIP prizes for regular wheel
-        query["is_vip"] = False
+        # Handle both false and missing is_vip field
+        query["$or"] = [{"is_vip": False}, {"is_vip": {"$exists": False}}]
     
     prizes = await db.prizes.find(query, {"_id": 0}).to_list(1000)
     return prizes
