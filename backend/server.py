@@ -548,7 +548,7 @@ async def get_all_users(admin: User = Depends(get_admin_user)):
 
 @api_router.patch("/admin/users/{user_id}")
 async def update_user(user_id: str, update_data: dict, admin: User = Depends(get_admin_user)):
-    allowed_fields = ["extra_spins", "is_admin", "daily_spin_used"]
+    allowed_fields = ["extra_spins", "is_admin", "daily_spin_used", "vip_spins"]
     update_dict = {k: v for k, v in update_data.items() if k in allowed_fields}
     
     if update_dict:
