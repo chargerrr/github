@@ -1471,12 +1471,12 @@ const AdminPage = ({ user, logout }) => {
             <div>
               <Label className="text-white">Site</Label>
               <Select value={vipConditionForm.site_id} onValueChange={(val) => setVipConditionForm({ ...vipConditionForm, site_id: val })}>
-                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                <SelectTrigger data-testid="vip-condition-site-select" className="bg-gray-800 text-white border-gray-700">
                   <SelectValue placeholder="Site seçin" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 text-white">
                   {sites.map((site) => (
-                    <SelectItem key={site.id} value={site.id}>
+                    <SelectItem key={site.id} value={site.id} data-testid={`vip-site-option-${site.id}`}>
                       {site.name}
                     </SelectItem>
                   ))}
@@ -1486,19 +1486,20 @@ const AdminPage = ({ user, logout }) => {
             <div>
               <Label className="text-white">Koşul Tipi</Label>
               <Select value={vipConditionForm.condition_type} onValueChange={(val) => setVipConditionForm({ ...vipConditionForm, condition_type: val })}>
-                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                <SelectTrigger data-testid="vip-condition-type-select" className="bg-gray-800 text-white border-gray-700">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 text-white">
-                  <SelectItem value="registration">Kayıt</SelectItem>
-                  <SelectItem value="deposit">Yatırım</SelectItem>
-                  <SelectItem value="bet">Bahis</SelectItem>
+                  <SelectItem value="registration" data-testid="condition-type-registration">Kayıt</SelectItem>
+                  <SelectItem value="deposit" data-testid="condition-type-deposit">Yatırım</SelectItem>
+                  <SelectItem value="bet" data-testid="condition-type-bet">Bahis</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-white">Koşul Değeri</Label>
               <Input
+                data-testid="vip-condition-value-input"
                 value={vipConditionForm.condition_value}
                 onChange={(e) => setVipConditionForm({ ...vipConditionForm, condition_value: e.target.value })}
                 placeholder="Örn: 100 TL yatırım"
@@ -1509,6 +1510,7 @@ const AdminPage = ({ user, logout }) => {
             <div>
               <Label className="text-white">Açıklama</Label>
               <Textarea
+                data-testid="vip-condition-description-input"
                 value={vipConditionForm.description}
                 onChange={(e) => setVipConditionForm({ ...vipConditionForm, description: e.target.value })}
                 placeholder="Bu koşulu sağlayan kullanıcılar için açıklama"
@@ -1519,6 +1521,7 @@ const AdminPage = ({ user, logout }) => {
             <div>
               <Label className="text-white">Verilen VIP Çevirme Hakkı</Label>
               <Input
+                data-testid="vip-condition-spins-input"
                 type="number"
                 min="1"
                 value={vipConditionForm.spins_granted}
@@ -1531,6 +1534,7 @@ const AdminPage = ({ user, logout }) => {
               <input
                 type="checkbox"
                 id="is_active"
+                data-testid="vip-condition-active-checkbox"
                 checked={vipConditionForm.is_active}
                 onChange={(e) => setVipConditionForm({ ...vipConditionForm, is_active: e.target.checked })}
                 className="w-5 h-5"
@@ -1540,6 +1544,7 @@ const AdminPage = ({ user, logout }) => {
               </Label>
             </div>
             <Button
+              data-testid="submit-vip-condition-btn"
               type="submit"
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold"
             >
