@@ -314,6 +314,57 @@ const HomePage = ({ user, setUser, logout }) => {
     }
   };
 
+  const handleVipSpin = async () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!user.vip_spins || user.vip_spins <= 0) {
+      toast.error("VIP çevirme hakkınız bulunmuyor");
+      return;
+    }
+
+    setVipSpinning(true);
+    playSpinSound();
+
+    const rotations = 5 + Math.random() * 3;
+    const degrees = rotations * 360;
+    if (vipWheelRef.current) {
+      vipWheelRef.current.style.transform = `rotate(${degrees}deg)`;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${API}/wheel/vip-spin-preview`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setTimeout(async () => {
+        setVipWonPrize(response.data);
+        setWonPrize(response.data); // Use same prize modal
+        setVipSpinning(false);
+        createParticles();
+        setShowSiteModal(true);
+        
+        // Refresh user data to update VIP spin counts
+        try {
+          const userResponse = await axios.get(`${API}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setUser(userResponse.data);
+        } catch (error) {
+          console.error("Failed to refresh user data:", error);
+        }
+      }, 4000);
+    } catch (error) {
+      setVipSpinning(false);
+      toast.error(error.response?.data?.detail || "VIP çark çevrilemedi");
+    }
+  };
+
   const submitSiteUsername = async () => {
     if (!siteUsername.trim()) {
       toast.error("Lütfen kullanıcı adınızı girin");
