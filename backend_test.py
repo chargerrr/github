@@ -275,6 +275,313 @@ class KazandiranCarkAPITester:
             200,
             headers={"Authorization": f"Bearer {self.user_token}"}
         )
+        
+        # Check if vip_spins field is present
+        if success and 'vip_spins' in response:
+            self.log_test("Auth Me - VIP Spins Field", True, f"VIP spins: {response['vip_spins']}")
+        elif success:
+            self.log_test("Auth Me - VIP Spins Field", False, "vip_spins field missing from response")
+            
+        return success
+
+    # VIP System Tests
+    def test_get_vip_conditions_public(self):
+        """Test getting public VIP conditions"""
+        success, response = self.run_test(
+            "Get VIP Conditions (Public)",
+            "GET",
+            "vip-conditions",
+            200
+        )
+        return success
+
+    def test_get_vip_conditions_admin(self):
+        """Test getting all VIP conditions (admin)"""
+        if not self.admin_token:
+            self.log_test("Get VIP Conditions (Admin)", False, "No admin token available")
+            return False
+            
+        success, response = self.run_test(
+            "Get VIP Conditions (Admin)",
+            "GET",
+            "admin/vip-conditions",
+            200,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        return success
+
+    def test_create_vip_condition(self):
+        """Test creating VIP condition"""
+        if not self.admin_token:
+            self.log_test("Create VIP Condition", False, "No admin token available")
+            return False
+            
+        # First get sites to use one
+        sites_success, sites_response = self.run_test(
+            "Get Sites for VIP Condition",
+            "GET",
+            "sites",
+            200
+        )
+        
+        if not sites_success or not sites_response:
+            self.log_test("Create VIP Condition", False, "No sites available")
+            return False
+            
+        site_id = sites_response[0]['id'] if sites_response else None
+        if not site_id:
+            self.log_test("Create VIP Condition", False, "No site ID found")
+            return False
+            
+        vip_condition_data = {
+            "site_id": site_id,
+            "condition_type": "deposit",
+            "condition_value": "100 TL yatırım",
+            "description": "100 TL yatırım yapan kullanıcılar VIP çark hakkı kazanır",
+            "spins_granted": 3,
+            "is_active": True
+        }
+        
+        success, response = self.run_test(
+            "Create VIP Condition",
+            "POST",
+            "admin/vip-conditions",
+            200,
+            data=vip_condition_data,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        
+        if success and 'id' in response:
+            self.created_vip_condition_id = response['id']
+            
+        return success
+
+    def test_delete_vip_condition(self):
+        """Test deleting VIP condition"""
+        if not self.admin_token:
+            self.log_test("Delete VIP Condition", False, "No admin token available")
+            return False
+            
+        if not hasattr(self, 'created_vip_condition_id'):
+            self.log_test("Delete VIP Condition", False, "No VIP condition ID available")
+            return False
+            
+        success, response = self.run_test(
+            "Delete VIP Condition",
+            "DELETE",
+            f"admin/vip-conditions/{self.created_vip_condition_id}",
+            200,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        return success
+
+    def test_get_vip_prizes(self):
+        """Test getting VIP prizes"""
+        success, response = self.run_test(
+            "Get VIP Prizes",
+            "GET",
+            "vip-prizes",
+            200
+        )
+        return success
+
+    def test_create_vip_prize(self):
+        """Test creating VIP prize"""
+        if not self.admin_token:
+            self.log_test("Create VIP Prize", False, "No admin token available")
+            return False
+            
+        # First get sites to use one
+        sites_success, sites_response = self.run_test(
+            "Get Sites for VIP Prize",
+            "GET",
+            "sites",
+            200
+        )
+        
+        if not sites_success or not sites_response:
+            self.log_test("Create VIP Prize", False, "No sites available")
+            return False
+            
+        site_id = sites_response[0]['id'] if sites_response else None
+        if not site_id:
+            self.log_test("Create VIP Prize", False, "No site ID found")
+            return False
+            
+        vip_prize_data = {
+            "name": f"VIP Prize {datetime.now().strftime('%H%M%S')}",
+            "site_id": site_id,
+            "description": "Exclusive VIP prize - 1000 TRX",
+            "weight": 5,
+            "is_vip": True
+        }
+        
+        success, response = self.run_test(
+            "Create VIP Prize",
+            "POST",
+            "admin/prizes",
+            200,
+            data=vip_prize_data,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        return success
+
+    def test_grant_vip_spins(self):
+        """Test granting VIP spins to user"""
+        if not self.admin_token:
+            self.log_test("Grant VIP Spins", False, "No admin token available")
+            return False
+            
+        if not hasattr(self, 'created_vip_condition_id'):
+            # Create a VIP condition first
+            self.test_create_vip_condition()
+            
+        if not hasattr(self, 'created_vip_condition_id'):
+            self.log_test("Grant VIP Spins", False, "No VIP condition available")
+            return False
+            
+        # Get user ID from user token
+        user_success, user_response = self.run_test(
+            "Get User Info for VIP Grant",
+            "GET",
+            "auth/me",
+            200,
+            headers={"Authorization": f"Bearer {self.user_token}"}
+        )
+        
+        if not user_success or 'id' not in user_response:
+            self.log_test("Grant VIP Spins", False, "Could not get user ID")
+            return False
+            
+        grant_data = {
+            "user_id": user_response['id'],
+            "condition_id": self.created_vip_condition_id,
+            "proof": "Test proof for VIP spin grant"
+        }
+        
+        success, response = self.run_test(
+            "Grant VIP Spins",
+            "POST",
+            "admin/grant-vip-spins",
+            200,
+            data=grant_data,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        return success
+
+    def test_vip_spin_preview(self):
+        """Test VIP wheel spin preview"""
+        if not self.user_token:
+            self.log_test("VIP Spin Preview", False, "No user token available")
+            return False
+            
+        success, response = self.run_test(
+            "VIP Spin Preview",
+            "POST",
+            "wheel/vip-spin-preview",
+            200,
+            headers={"Authorization": f"Bearer {self.user_token}"}
+        )
+        
+        # If user has no VIP spins, this should fail with 400
+        if not success and "No VIP spins available" in str(response):
+            self.log_test("VIP Spin Preview - No Spins", True, "Correctly rejected - no VIP spins")
+            return True
+            
+        return success
+
+    def test_get_vip_users(self):
+        """Test getting VIP users"""
+        if not self.admin_token:
+            self.log_test("Get VIP Users", False, "No admin token available")
+            return False
+            
+        success, response = self.run_test(
+            "Get VIP Users",
+            "GET",
+            "admin/vip-users",
+            200,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        return success
+
+    def test_get_vip_stats(self):
+        """Test getting VIP statistics"""
+        if not self.admin_token:
+            self.log_test("Get VIP Stats", False, "No admin token available")
+            return False
+            
+        success, response = self.run_test(
+            "Get VIP Stats",
+            "GET",
+            "admin/vip-stats",
+            200,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        
+        if success:
+            expected_fields = ['total_vip_conditions', 'active_vip_conditions', 'users_with_vip_spins', 
+                             'total_vip_grants', 'vip_prizes', 'total_vip_spins_available']
+            missing_fields = [field for field in expected_fields if field not in response]
+            if missing_fields:
+                self.log_test("VIP Stats - Fields Check", False, f"Missing fields: {missing_fields}")
+            else:
+                self.log_test("VIP Stats - Fields Check", True, "All expected fields present")
+                
+        return success
+
+    def test_update_user_vip_spins(self):
+        """Test updating user VIP spins via admin"""
+        if not self.admin_token:
+            self.log_test("Update User VIP Spins", False, "No admin token available")
+            return False
+            
+        # Get user ID
+        user_success, user_response = self.run_test(
+            "Get User Info for VIP Update",
+            "GET",
+            "auth/me",
+            200,
+            headers={"Authorization": f"Bearer {self.user_token}"}
+        )
+        
+        if not user_success or 'id' not in user_response:
+            self.log_test("Update User VIP Spins", False, "Could not get user ID")
+            return False
+            
+        update_data = {
+            "vip_spins": 5
+        }
+        
+        success, response = self.run_test(
+            "Update User VIP Spins",
+            "PATCH",
+            f"admin/users/{user_response['id']}",
+            200,
+            data=update_data,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        return success
+
+    def test_database_stats_vip(self):
+        """Test database stats includes VIP conditions"""
+        if not self.admin_token:
+            self.log_test("Database Stats VIP", False, "No admin token available")
+            return False
+            
+        success, response = self.run_test(
+            "Database Stats with VIP",
+            "GET",
+            "admin/database/stats",
+            200,
+            headers={"Authorization": f"Bearer {self.admin_token}"}
+        )
+        
+        if success and 'vip_conditions' in response:
+            self.log_test("Database Stats - VIP Conditions Field", True, f"VIP conditions count: {response['vip_conditions']}")
+        elif success:
+            self.log_test("Database Stats - VIP Conditions Field", False, "vip_conditions field missing from stats")
+            
         return success
 
     def run_all_tests(self):
