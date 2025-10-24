@@ -474,28 +474,76 @@ const HomePage = ({ user, setUser, logout }) => {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" data-testid="main-heading">
             Şansını Dene, Büyük Ödüller Kazan!
           </h2>
-          <p className="text-lg text-gray-300" data-testid="sub-heading">
+          <p className="text-lg text-gray-300 mb-4" data-testid="sub-heading">
             {user
-              ? `${user.extra_spins > 0 ? `${user.extra_spins} ekstra hakkın var!` : "Bugünlük çark hakkını kullan!"}`
+              ? `${user.extra_spins > 0 ? `${user.extra_spins} ekstra hakkın var!` : "Bugünlük çark hakkını kullan!"} ${user.vip_spins > 0 ? `🌟 ${user.vip_spins} VIP çark hakkın var!` : ""}`
               : "Çarkı çevirmek için giriş yapın"}
           </p>
+          
+          {/* Wheel Selector */}
+          {user && user.vip_spins > 0 && (
+            <div className="flex justify-center gap-4 mb-6">
+              <button
+                onClick={() => setActiveWheel("normal")}
+                className={`px-6 py-3 rounded-lg font-bold transition-all ${
+                  activeWheel === "normal"
+                    ? "bg-yellow-400 text-gray-900"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                <Gift className="inline mr-2" size={20} />
+                Normal Çark
+              </button>
+              <button
+                onClick={() => setActiveWheel("vip")}
+                className={`px-6 py-3 rounded-lg font-bold transition-all ${
+                  activeWheel === "vip"
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                <Trophy className="inline mr-2" size={20} />
+                VIP Çark ({user.vip_spins})
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Wheel */}
-        <div className="wheel-container mb-12" data-testid="wheel-container">
-          <div className="wheel-pointer"></div>
-          <div ref={wheelRef} className={`wheel ${spinning ? "spinning" : ""}`} data-testid="wheel">
-            <canvas ref={canvasRef} width="484" height="484"></canvas>
+        {/* Normal Wheel */}
+        {activeWheel === "normal" && (
+          <div className="wheel-container mb-12" data-testid="wheel-container">
+            <div className="wheel-pointer"></div>
+            <div ref={wheelRef} className={`wheel ${spinning ? "spinning" : ""}`} data-testid="wheel">
+              <canvas ref={canvasRef} width="484" height="484"></canvas>
+            </div>
+            <div
+              className="wheel-center"
+              onClick={handleSpin}
+              data-testid="spin-btn"
+              style={{ pointerEvents: spinning ? "none" : "auto" }}
+            >
+              <Trophy className="text-white" size={40} />
+            </div>
           </div>
-          <div
-            className="wheel-center"
-            onClick={handleSpin}
-            data-testid="spin-btn"
-            style={{ pointerEvents: spinning ? "none" : "auto" }}
-          >
-            <Trophy className="text-white" size={40} />
+        )}
+
+        {/* VIP Wheel */}
+        {activeWheel === "vip" && (
+          <div className="wheel-container mb-12" data-testid="vip-wheel-container">
+            <div className="wheel-pointer vip-pointer"></div>
+            <div ref={vipWheelRef} className={`wheel vip-wheel ${vipSpinning ? "spinning" : ""}`} data-testid="vip-wheel">
+              <canvas ref={vipCanvasRef} width="484" height="484"></canvas>
+            </div>
+            <div
+              className="wheel-center vip-center"
+              onClick={handleVipSpin}
+              data-testid="vip-spin-btn"
+              style={{ pointerEvents: vipSpinning ? "none" : "auto" }}
+            >
+              <Star className="text-yellow-400" size={40} />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Recent Winners */}
         {recentWinners.length > 0 && (
