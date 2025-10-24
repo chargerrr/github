@@ -1,6 +1,66 @@
-# Kazandıran Çark - Spinning Wheel Prize Application
+# 🎰 Kazandıran Çark - VIP Spin & Win Platform
 
-Modern, jackpot temalı çark çevirme ve ödül kazanma uygulaması.
+Modern, şık ve kullanıcı dostu bir çark çevirme platformu. Normal çark ve VIP çark sistemi ile kullanıcılarınıza eşsiz bir deneyim sunun!
+
+## ✨ Özellikler
+
+### 🎯 Normal Çark
+- Günlük ücretsiz çevirme hakkı
+- Ekstra çevirme hakları
+- Çeşitli ödüller (bonus, freespin, nakit, freebet)
+- Smooth ve heyecanlı animasyonlar
+- Gerçek zamanlı kazanan listesi
+
+### 🌟 VIP Çark
+- Özel büyük ödüller (TRX, TL bonuslar)
+- Mor/pembe premium tasarım
+- Özelleştirilebilir VIP koşullar
+- Manuel veya otomatik hak verme
+- VIP kullanıcı yönetimi ve istatistikler
+
+### 👑 Admin Panel
+- **Ödül Yönetimi:** Normal ve VIP ödüller
+- **Site Yönetimi:** Ortaklık siteleri, logolar, kategoriler
+- **VIP Kurallar:** Koşul bazlı VIP hak verme
+- **Kullanıcı Yönetimi:** Tüm kullanıcıları görüntüleme, düzenleme, export
+- **İstatistikler:** Detaylı raporlama ve analiz
+- **Database Yönetimi:** Seçici veri temizleme
+
+## 🚀 Hızlı Başlangıç
+
+### Docker ile Kurulum (Önerilen)
+
+```bash
+# Environment dosyalarını ayarlayın
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+# .env dosyalarını düzenleyin!
+
+# Docker ile başlatın
+docker-compose up -d
+
+# Demo verileri oluşturun (opsiyonel)
+docker exec -it kazandiran_backend python scripts/create_complete_demo.py
+```
+
+### Manuel Kurulum
+
+Detaylı kurulum talimatları için [DEPLOYMENT.md](DEPLOYMENT.md) dosyasını inceleyin.
+
+## 📚 Teknolojiler
+
+**Backend:** FastAPI, MongoDB, Motor, JWT, Passlib  
+**Frontend:** React 18, Tailwind CSS, Shadcn UI, Axios  
+**DevOps:** Docker, Nginx
+
+## 📖 Dokümantasyon
+
+- [Deployment Rehberi](DEPLOYMENT.md) - Detaylı kurulum ve konfigürasyon
+- [API Dokümantasyonu](http://localhost:8001/docs) - FastAPI swagger UI
+
+---
+
+**Made with ❤️ for amazing user experience**
 
 ## Özellikler
 
