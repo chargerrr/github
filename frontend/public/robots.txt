@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /settings
 
-Sitemap: https://spin-win-10.preview.emergentagent.com/sitemap.xml
+Sitemap: https://vipspin-platform.preview.emergentagent.com/sitemap.xml

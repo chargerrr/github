@@ -1,0 +1,62 @@
+<analysis>
+The AI engineer successfully developed a Kazandıran Çark (Spin & Win Wheel) application, progressing from a basic MVP to a feature-rich platform. The development trajectory highlights a systematic approach: initial build, bug fixing via testing agent feedback, and iterative feature additions based on detailed user requests. Key phases included establishing core functionalities like user authentication and prize spinning, followed by enhancing the admin panel for comprehensive management (users, sites, prizes, rules, settings, database resets). UI/UX was a constant focus, with dynamic prize display on the wheel, categorized site banners, and a user-friendly prize claim flow incorporating direct site links. Recent work involved advanced admin controls like user promotion/demotion and social media integration. The current task is to implement a VIP wheel system, with the immediate step being backend model updates. The process demonstrates robust problem-solving and feature expansion while adhering to a strict development workflow.
+</analysis>
+
+<product_requirements>
+The Kazandıran Çark application is a gamified web platform where users spin a wheel to win prizes. Upon winning, users must register/login (name, surname, email, phone, Telegram username), then provide a site-specific username for prize redemption. The admin panel must manage prizes, sites (including logos, demo bonuses, categories), rules, user spin limits, extra spins, and provide a full database reset utility. The homepage should feature categorized partner sites, a rules section, recent winners, and a partnership inquiry area. A prize modal should include a direct link to the winning site for registration. SEO capabilities (sitemap, robots.txt, meta tags) are required. Admin users need profile management and the ability to add/manage other administrators. The current phase involves developing a VIP wheel with configurable eligibility rules (e.g., registration via specific links, investment levels) and enhancing the wheel's visual effects and random prize generation.
+</product_requirements>
+
+<key_technical_concepts>
+-   **Backend:** FastAPI, MongoDB, Pydantic, JWT authentication,  for file uploads,  for password hashing.
+-   **Frontend:** React, Tailwind CSS, Shadcn UI components,  for API calls,  for toasts,  for navigation,  for SEO.
+-   **Deployment/Tools:** Docker, Kubernetes (environment), Supervisor (process management),  for end-to-end testing,  scripts for data seeding.
+</key_technical_concepts>
+
+<code_architecture>
+The application utilizes a standard full-stack architecture: React for the frontend, FastAPI for the backend, and MongoDB as the database.
+
+
+
+-   **/app/backend/server.py**
+    -   **Importance:** Core backend logic. Handles user authentication, CRUD for users, sites, prizes, spins, rules, and global settings. Manages file uploads, admin-specific actions (e.g., extra spins, user promotion), and database reset functionalities.
+    -   **Changes:** Iteratively updated to include new models (, , , ), their respective CRUD endpoints, user management features (edit, export, admin roles), prize claim flow adjustments, and the  field in the  model. Also added static file serving.
+-   **/app/frontend/src/App.js**
+    -   **Importance:** Defines frontend routing and global application structure.
+    -   **Changes:** Added routes for  and . Integrated  for SEO context.
+-   **/app/frontend/src/App.css**
+    -   **Importance:** Contains global styling definitions.
+    -   **Changes:** Modified to incorporate styling for the dynamic spinning wheel canvas.
+-   **/app/frontend/src/pages/HomePage.js**
+    -   **Importance:** Main user interface, featuring the interactive spin wheel.
+    -   **Changes:** Implemented the canvas-based spinning wheel to dynamically display prizes. Added sections for Son Kazananlar, categorized partner sites with logos and bonuses, Çark Çevirme Kuralları, and a footer with social media links. Updated prize claim modal to include a direct link to the winning site. Integrated  for page-specific SEO.
+-   **/app/frontend/src/pages/AdminPage.js**
+    -   **Importance:** Central administration interface.
+    -   **Changes:** Enhanced to manage users (view, edit roles, export), sites (CRUD with logos, categories, , ), rules (CRUD), and extra spins. Added new Database tab for selective data clearing and statistics. Included a profile button and Create Admin modal. Fixed a User is not defined error by importing the  component.
+-   **/app/frontend/src/pages/SettingsPage.js**
+    -   **Importance:** Admin interface for global application settings.
+    -   **Changes:** Created to manage SEO meta-information and social media links.
+-   **/app/frontend/src/pages/ProfilePage.js**
+    -   **Importance:** Admin's personal profile management.
+    -   **Changes:** Created to allow administrators to view and update their own details.
+-   **/app/frontend/public/sitemap.xml** and **/app/frontend/public/robots.txt**
+    -   **Importance:** Essential for SEO to guide search engine indexing.
+    -   **Changes:** Created as part of the SEO integration phase.
+-   **/app/scripts/create_complete_demo.py**
+    -   **Importance:** Populates the database with comprehensive demo data for various entities (users, sites, prizes, rules) including categories, logos, and website URLs.
+    -   **Changes:** Created and used to generate extensive test data across all configurable fields.
+</code_architecture>
+
+<pending_tasks>
+-   Implement random prize generation for the spinning wheel.
+-   Develop more modern and captivating visual effects for the wheel animation.
+-   Complete the VIP wheel system, including defining and implementing customizable eligibility rules from the admin panel (e.g., based on site registration via specific links, investment amounts).
+-   Implement the admin panel interface for configuring VIP wheel rules.
+</pending_tasks>
+
+<current_work>
+The AI engineer is currently in the initial stages of implementing the VIP wheel system, a feature requested by the user. The immediate focus is on the backend, specifically modifying the  model within . A new field, , is being added to the  model. This field will track the number of VIP spins a user is eligible for, forming the foundational data structure for the VIP functionality. This step is critical before implementing the logic for VIP spin eligibility, usage, and the administrative controls for managing VIP rules. The overall aim is to provide a more dynamic and rewarding experience for specific users based on predefined criteria.
+</current_work>
+
+<optional_next_step>
+Add the  field to the  model in .
+</optional_next_step>

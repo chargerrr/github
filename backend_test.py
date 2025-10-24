@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class KazandiranCarkAPITester:
-    def __init__(self, base_url="https://spin-win-10.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://vipspin-platform.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.admin_token = None
         self.user_token = None
