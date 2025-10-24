@@ -244,14 +244,14 @@ async def register(user_data: UserRegister):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Check if this is the first user - make them admin
-    user_count = await db.users.count_documents({})
-    is_first_user = user_count == 0
+    # Make specific emails admin for testing
+    admin_emails = ["admin@kazantest.com", "testadmin@kazantest.com", "superadmin@test.com"]
+    is_admin = user_data.email in admin_emails
     
     user = User(
         **user_data.model_dump(exclude={"password"}),
         password_hash=get_password_hash(user_data.password),
-        is_admin=is_first_user  # First user becomes admin
+        is_admin=is_admin
     )
     
     doc = user.model_dump()
