@@ -111,6 +111,58 @@ const HomePage = ({ user, setUser, logout }) => {
     });
   };
 
+  const drawVipWheel = () => {
+    const canvas = vipCanvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = canvas.width / 2 - 10;
+
+    // Take first 8 VIP prizes for display
+    const displayPrizes = vipPrizes.slice(0, 8);
+    const sliceAngle = (2 * Math.PI) / displayPrizes.length;
+
+    displayPrizes.forEach((prize, index) => {
+      const startAngle = index * sliceAngle;
+      const endAngle = startAngle + sliceAngle;
+
+      // Draw slice with VIP gradient colors
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+      ctx.closePath();
+      
+      // VIP colors: Purple/Pink gradient
+      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+      if (index % 2 === 0) {
+        gradient.addColorStop(0, '#9333EA'); // Purple
+        gradient.addColorStop(1, '#7C3AED');
+      } else {
+        gradient.addColorStop(0, '#EC4899'); // Pink
+        gradient.addColorStop(1, '#DB2777');
+      }
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Draw text with glow effect
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(startAngle + sliceAngle / 2);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#FFD700';
+      ctx.font = 'bold 14px Inter';
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 10;
+      ctx.fillText(prize.name.substring(0, 20), radius / 1.5, 10);
+      ctx.restore();
+    });
+  };
+
   const fetchPrizes = async () => {
     try {
       const response = await axios.get(`${API}/prizes`);
