@@ -177,11 +177,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Panel VIP Management"
-  stuck_tasks:
-    - "Admin Panel VIP Management"
+    - "Complete VIP System E2E Testing"
+  stuck_tasks: []
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
