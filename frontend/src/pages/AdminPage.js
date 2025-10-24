@@ -155,6 +155,63 @@ const AdminPage = ({ user, logout }) => {
     }
   };
 
+  // VIP Condition handlers
+  const handleCreateVipCondition = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(`${API}/admin/vip-conditions`, vipConditionForm, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("VIP koşul oluşturuldu!");
+      setShowVipConditionModal(false);
+      setVipConditionForm({
+        site_id: "",
+        condition_type: "registration",
+        condition_value: "",
+        description: "",
+        spins_granted: 1,
+        is_active: true,
+      });
+      fetchData();
+    } catch (error) {
+      toast.error("VIP koşul oluşturulamadı");
+    }
+  };
+
+  const handleDeleteVipCondition = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(`${API}/admin/vip-conditions/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("VIP koşul silindi");
+      fetchData();
+    } catch (error) {
+      toast.error("VIP koşul silinemedi");
+    }
+  };
+
+  const handleGrantVipSpins = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(`${API}/admin/grant-vip-spins`, vipSpinGrantForm, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("VIP çevirme hakkı verildi!");
+      setShowVipSpinGrantModal(false);
+      setVipSpinGrantForm({
+        user_id: "",
+        condition_id: "",
+        proof: "",
+      });
+      fetchData();
+    } catch (error) {
+      toast.error("VIP hak verilemedi");
+    }
+  };
+
   const handleCreateSite = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
