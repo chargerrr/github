@@ -1567,12 +1567,12 @@ const AdminPage = ({ user, logout }) => {
             <div>
               <Label className="text-white">Kullanıcı</Label>
               <Select value={vipSpinGrantForm.user_id} onValueChange={(val) => setVipSpinGrantForm({ ...vipSpinGrantForm, user_id: val })}>
-                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                <SelectTrigger data-testid="vip-grant-user-select" className="bg-gray-800 text-white border-gray-700">
                   <SelectValue placeholder="Kullanıcı seçin" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 text-white">
                   {allUsers.map((u) => (
-                    <SelectItem key={u.id} value={u.id}>
+                    <SelectItem key={u.id} value={u.id} data-testid={`vip-user-option-${u.id}`}>
                       {u.name} {u.surname} ({u.email})
                     </SelectItem>
                   ))}
@@ -1582,12 +1582,12 @@ const AdminPage = ({ user, logout }) => {
             <div>
               <Label className="text-white">VIP Koşul</Label>
               <Select value={vipSpinGrantForm.condition_id} onValueChange={(val) => setVipSpinGrantForm({ ...vipSpinGrantForm, condition_id: val })}>
-                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                <SelectTrigger data-testid="vip-grant-condition-select" className="bg-gray-800 text-white border-gray-700">
                   <SelectValue placeholder="Koşul seçin" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 text-white">
                   {vipConditions.map((cond) => (
-                    <SelectItem key={cond.id} value={cond.id}>
+                    <SelectItem key={cond.id} value={cond.id} data-testid={`vip-condition-option-${cond.id}`}>
                       {cond.description} ({cond.spins_granted} hak)
                     </SelectItem>
                   ))}
@@ -1597,6 +1597,7 @@ const AdminPage = ({ user, logout }) => {
             <div>
               <Label className="text-white">Kanıt (Opsiyonel)</Label>
               <Input
+                data-testid="vip-grant-proof-input"
                 value={vipSpinGrantForm.proof}
                 onChange={(e) => setVipSpinGrantForm({ ...vipSpinGrantForm, proof: e.target.value })}
                 placeholder="Ekran görüntüsü URL veya açıklama"
@@ -1604,6 +1605,7 @@ const AdminPage = ({ user, logout }) => {
               />
             </div>
             <Button
+              data-testid="submit-vip-grant-btn"
               type="submit"
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold"
             >
