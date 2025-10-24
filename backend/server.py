@@ -266,6 +266,15 @@ async def login(login_data: UserLogin):
     if not user or not verify_password(login_data.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+    # Update admin status for specific emails if not already set
+    admin_emails = ["admin@kazantest.com", "testadmin@kazantest.com", "superadmin@test.com"]
+    if login_data.email in admin_emails and not user.get("is_admin", False):
+        await db.users.update_one(
+            {"email": login_data.email},
+            {"$set": {"is_admin": True}}
+        )
+        user["is_admin"] = True
+    
     token = create_access_token({"sub": user["id"]})
     return {"token": token, "user": {"id": user["id"], "name": user["name"], "email": user["email"], "is_admin": user.get("is_admin", False)}}
 
