@@ -266,7 +266,15 @@ async def login(login_data: UserLogin):
 
 @api_router.get("/auth/me")
 async def get_me(current_user: User = Depends(get_current_user)):
-    return {"id": current_user.id, "name": current_user.name, "email": current_user.email, "is_admin": current_user.is_admin, "extra_spins": current_user.extra_spins, "daily_spin_used": current_user.daily_spin_used}
+    return {
+        "id": current_user.id, 
+        "name": current_user.name, 
+        "email": current_user.email, 
+        "is_admin": current_user.is_admin, 
+        "extra_spins": current_user.extra_spins, 
+        "vip_spins": current_user.vip_spins,
+        "daily_spin_used": current_user.daily_spin_used
+    }
 
 # Site endpoints
 @api_router.get("/sites", response_model=List[Site])
