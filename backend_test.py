@@ -204,9 +204,8 @@ class KazandiranCarkAPITester:
         success, response = self.run_test(
             "Wheel Spin",
             "POST",
-            "wheel/spin",
+            "wheel/spin-preview",
             200,
-            data=spin_data,
             headers={"Authorization": f"Bearer {self.user_token}"}
         )
         return success
