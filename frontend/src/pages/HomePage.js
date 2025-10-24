@@ -27,7 +27,6 @@ const HomePage = ({ user, setUser, logout }) => {
   const [mySpins, setMySpins] = useState([]);
   const [recentWinners, setRecentWinners] = useState([]);
   const [settings, setSettings] = useState({});
-  const [activeWheel, setActiveWheel] = useState("normal"); // "normal" or "vip"
   const [vipSpinning, setVipSpinning] = useState(false);
   const [vipWonPrize, setVipWonPrize] = useState(null);
   const wheelRef = useRef(null);
