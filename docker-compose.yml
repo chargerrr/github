@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: kazandiran_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=kazandiran_cark
+    networks:
+      - kazandiran_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kazandiran_backend
+    restart: always
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./backend:/app
+      - ./backend/uploads:/app/uploads
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017
+      - DB_NAME=kazandiran_cark
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+      - CORS_ORIGINS=*
+    depends_on:
+      - mongodb
+    networks:
+      - kazandiran_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kazandiran_frontend
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:8001
+    depends_on:
+      - backend
+    networks:
+      - kazandiran_network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  kazandiran_network:
+    driver: bridge
