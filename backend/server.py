@@ -420,8 +420,8 @@ async def spin_wheel_preview(current_user: User = Depends(get_current_user)):
             {"$set": {"daily_spin_used": True, "last_spin_date": today}}
         )
     
-    # Get all prizes with weights
-    prizes = await db.prizes.find({}, {"_id": 0}).to_list(1000)
+    # Get all non-VIP prizes with weights
+    prizes = await db.prizes.find({"is_vip": False}, {"_id": 0}).to_list(1000)
     if not prizes:
         raise HTTPException(status_code=400, detail="No prizes available")
     
