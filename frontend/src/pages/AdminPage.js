@@ -1154,6 +1154,19 @@ const AdminPage = ({ user, logout }) => {
                 required
               />
             </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="is_vip"
+                checked={prizeForm.is_vip}
+                onChange={(e) => setPrizeForm({ ...prizeForm, is_vip: e.target.checked })}
+                className="w-5 h-5"
+              />
+              <Label htmlFor="is_vip" className="text-purple-300 font-semibold cursor-pointer flex items-center gap-2">
+                <Trophy size={18} className="text-yellow-400" />
+                VIP Ödül (Sadece VIP çarkta görünür)
+              </Label>
+            </div>
             <Button
               data-testid="submit-prize-btn"
               type="submit"
