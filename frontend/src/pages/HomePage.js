@@ -479,71 +479,83 @@ const HomePage = ({ user, setUser, logout }) => {
               ? `${user.extra_spins > 0 ? `${user.extra_spins} ekstra hakkın var!` : "Bugünlük çark hakkını kullan!"} ${user.vip_spins > 0 ? `🌟 ${user.vip_spins} VIP çark hakkın var!` : ""}`
               : "Çarkı çevirmek için giriş yapın"}
           </p>
-          
-          {/* Wheel Selector */}
-          {user && user.vip_spins > 0 && (
-            <div className="flex justify-center gap-4 mb-6">
-              <button
-                onClick={() => setActiveWheel("normal")}
-                className={`px-6 py-3 rounded-lg font-bold transition-all ${
-                  activeWheel === "normal"
-                    ? "bg-yellow-400 text-gray-900"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                }`}
-              >
-                <Gift className="inline mr-2" size={20} />
-                Normal Çark
-              </button>
-              <button
-                onClick={() => setActiveWheel("vip")}
-                className={`px-6 py-3 rounded-lg font-bold transition-all ${
-                  activeWheel === "vip"
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                }`}
-              >
-                <Trophy className="inline mr-2" size={20} />
-                VIP Çark ({user.vip_spins})
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* Normal Wheel */}
-        {activeWheel === "normal" && (
-          <div className="wheel-container mb-12" data-testid="wheel-container">
-            <div className="wheel-pointer"></div>
-            <div ref={wheelRef} className={`wheel ${spinning ? "spinning" : ""}`} data-testid="wheel">
-              <canvas ref={canvasRef} width="484" height="484"></canvas>
+        {/* Wheels Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 max-w-6xl w-full">
+          {/* Normal Wheel */}
+          <div className="flex flex-col items-center">
+            <h3 className="text-2xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+              <Gift size={28} />
+              Normal Çark
+            </h3>
+            <div className="wheel-container" data-testid="wheel-container">
+              <div className="wheel-pointer"></div>
+              <div ref={wheelRef} className={`wheel ${spinning ? "spinning" : ""}`} data-testid="wheel">
+                <canvas ref={canvasRef} width="484" height="484"></canvas>
+              </div>
+              <div
+                className="wheel-center"
+                onClick={handleSpin}
+                data-testid="spin-btn"
+                style={{ pointerEvents: spinning ? "none" : "auto" }}
+              >
+                <Trophy className="text-white" size={40} />
+              </div>
             </div>
-            <div
-              className="wheel-center"
-              onClick={handleSpin}
-              data-testid="spin-btn"
-              style={{ pointerEvents: spinning ? "none" : "auto" }}
-            >
-              <Trophy className="text-white" size={40} />
-            </div>
+            <p className="text-gray-300 mt-4 text-center">
+              {user 
+                ? (user.daily_spin_used && user.extra_spins <= 0 
+                  ? "Günlük hakkın bitti" 
+                  : "Çarkı çevir ve kazan!")
+                : "Giriş yap ve çevir"}
+            </p>
           </div>
-        )}
 
-        {/* VIP Wheel */}
-        {activeWheel === "vip" && (
-          <div className="wheel-container mb-12" data-testid="vip-wheel-container">
-            <div className="wheel-pointer vip-pointer"></div>
-            <div ref={vipWheelRef} className={`wheel vip-wheel ${vipSpinning ? "spinning" : ""}`} data-testid="vip-wheel">
-              <canvas ref={vipCanvasRef} width="484" height="484"></canvas>
-            </div>
-            <div
-              className="wheel-center vip-center"
-              onClick={handleVipSpin}
-              data-testid="vip-spin-btn"
-              style={{ pointerEvents: vipSpinning ? "none" : "auto" }}
+          {/* VIP Wheel */}
+          <div className="flex flex-col items-center">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
+              <Trophy size={28} className="text-purple-400" />
+              VIP Çark
+              {user && user.vip_spins > 0 && (
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm px-3 py-1 rounded-full">
+                  {user.vip_spins} Hak
+                </span>
+              )}
+            </h3>
+            <div 
+              className={`wheel-container ${!user || user.vip_spins <= 0 ? 'opacity-50 pointer-events-none' : ''}`} 
+              data-testid="vip-wheel-container"
             >
-              <Star className="text-yellow-400" size={40} />
+              <div className="wheel-pointer vip-pointer"></div>
+              <div ref={vipWheelRef} className={`wheel vip-wheel ${vipSpinning ? "spinning" : ""}`} data-testid="vip-wheel">
+                <canvas ref={vipCanvasRef} width="484" height="484"></canvas>
+              </div>
+              <div
+                className="wheel-center vip-center"
+                onClick={handleVipSpin}
+                data-testid="vip-spin-btn"
+                style={{ pointerEvents: vipSpinning || !user || user.vip_spins <= 0 ? "none" : "auto" }}
+              >
+                <Star className="text-yellow-400" size={40} />
+              </div>
+              {(!user || user.vip_spins <= 0) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full">
+                  <div className="text-center text-white">
+                    <Star size={48} className="mx-auto mb-2 text-purple-400" />
+                    <p className="font-bold">VIP ÇARK</p>
+                    <p className="text-sm text-gray-300">Hakkın yok</p>
+                  </div>
+                </div>
+              )}
             </div>
+            <p className="text-gray-300 mt-4 text-center">
+              {user && user.vip_spins > 0
+                ? "VIP çarkı çevir ve büyük ödüller kazan!"
+                : "VIP hakkı için admin ile iletişime geç"}
+            </p>
           </div>
-        )}
+        </div>
 
         {/* Recent Winners */}
         {recentWinners.length > 0 && (
