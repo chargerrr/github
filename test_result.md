@@ -174,13 +174,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "VIP models and API endpoints"
     - "Admin Panel VIP Management"
-    - "HomePage VIP Wheel"
-    - "VIP Wheel Styles"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "high_first"
+  stuck_tasks:
+    - "Admin Panel VIP Management"
+  test_all: false
+  test_priority: "stuck_first"
 
 agent_communication:
   - agent: "main"
