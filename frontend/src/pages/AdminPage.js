@@ -1457,6 +1457,156 @@ const AdminPage = ({ user, logout }) => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* VIP Condition Modal */}
+      <Dialog open={showVipConditionModal} onOpenChange={setShowVipConditionModal}>
+        <DialogContent className="bg-gray-900 border-purple-400" data-testid="vip-condition-modal">
+          <DialogHeader>
+            <DialogTitle className="text-purple-300 text-2xl flex items-center gap-2">
+              <Star className="text-yellow-400" />
+              Yeni VIP Koşul Ekle
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateVipCondition} className="space-y-4">
+            <div>
+              <Label className="text-white">Site</Label>
+              <Select value={vipConditionForm.site_id} onValueChange={(val) => setVipConditionForm({ ...vipConditionForm, site_id: val })}>
+                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                  <SelectValue placeholder="Site seçin" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 text-white">
+                  {sites.map((site) => (
+                    <SelectItem key={site.id} value={site.id}>
+                      {site.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-white">Koşul Tipi</Label>
+              <Select value={vipConditionForm.condition_type} onValueChange={(val) => setVipConditionForm({ ...vipConditionForm, condition_type: val })}>
+                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 text-white">
+                  <SelectItem value="registration">Kayıt</SelectItem>
+                  <SelectItem value="deposit">Yatırım</SelectItem>
+                  <SelectItem value="bet">Bahis</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-white">Koşul Değeri</Label>
+              <Input
+                value={vipConditionForm.condition_value}
+                onChange={(e) => setVipConditionForm({ ...vipConditionForm, condition_value: e.target.value })}
+                placeholder="Örn: 100 TL yatırım"
+                className="bg-gray-800 text-white border-gray-700"
+                required
+              />
+            </div>
+            <div>
+              <Label className="text-white">Açıklama</Label>
+              <Textarea
+                value={vipConditionForm.description}
+                onChange={(e) => setVipConditionForm({ ...vipConditionForm, description: e.target.value })}
+                placeholder="Bu koşulu sağlayan kullanıcılar için açıklama"
+                className="bg-gray-800 text-white border-gray-700"
+                required
+              />
+            </div>
+            <div>
+              <Label className="text-white">Verilen VIP Çevirme Hakkı</Label>
+              <Input
+                type="number"
+                min="1"
+                value={vipConditionForm.spins_granted}
+                onChange={(e) => setVipConditionForm({ ...vipConditionForm, spins_granted: parseInt(e.target.value) })}
+                className="bg-gray-800 text-white border-gray-700"
+                required
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="is_active"
+                checked={vipConditionForm.is_active}
+                onChange={(e) => setVipConditionForm({ ...vipConditionForm, is_active: e.target.checked })}
+                className="w-5 h-5"
+              />
+              <Label htmlFor="is_active" className="text-white cursor-pointer">
+                Aktif
+              </Label>
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold"
+            >
+              VIP Koşul Ekle
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* VIP Spin Grant Modal */}
+      <Dialog open={showVipSpinGrantModal} onOpenChange={setShowVipSpinGrantModal}>
+        <DialogContent className="bg-gray-900 border-purple-400" data-testid="vip-spin-grant-modal">
+          <DialogHeader>
+            <DialogTitle className="text-purple-300 text-2xl flex items-center gap-2">
+              <Trophy className="text-yellow-400" />
+              VIP Çevirme Hakkı Ver
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleGrantVipSpins} className="space-y-4">
+            <div>
+              <Label className="text-white">Kullanıcı</Label>
+              <Select value={vipSpinGrantForm.user_id} onValueChange={(val) => setVipSpinGrantForm({ ...vipSpinGrantForm, user_id: val })}>
+                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                  <SelectValue placeholder="Kullanıcı seçin" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 text-white">
+                  {allUsers.map((u) => (
+                    <SelectItem key={u.id} value={u.id}>
+                      {u.name} {u.surname} ({u.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-white">VIP Koşul</Label>
+              <Select value={vipSpinGrantForm.condition_id} onValueChange={(val) => setVipSpinGrantForm({ ...vipSpinGrantForm, condition_id: val })}>
+                <SelectTrigger className="bg-gray-800 text-white border-gray-700">
+                  <SelectValue placeholder="Koşul seçin" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 text-white">
+                  {vipConditions.map((cond) => (
+                    <SelectItem key={cond.id} value={cond.id}>
+                      {cond.description} ({cond.spins_granted} hak)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-white">Kanıt (Opsiyonel)</Label>
+              <Input
+                value={vipSpinGrantForm.proof}
+                onChange={(e) => setVipSpinGrantForm({ ...vipSpinGrantForm, proof: e.target.value })}
+                placeholder="Ekran görüntüsü URL veya açıklama"
+                className="bg-gray-800 text-white border-gray-700"
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold"
+            >
+              VIP Hak Ver
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
