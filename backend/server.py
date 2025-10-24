@@ -364,8 +364,16 @@ async def delete_rule(rule_id: str, admin: User = Depends(get_admin_user)):
 
 # Prize endpoints
 @api_router.get("/prizes", response_model=List[Prize])
-async def get_prizes():
-    prizes = await db.prizes.find({}, {"_id": 0}).to_list(1000)
+async def get_prizes(is_vip: Optional[bool] = None):
+    """Get prizes, optionally filtered by VIP status"""
+    query = {}
+    if is_vip is not None:
+        query["is_vip"] = is_vip
+    else:
+        # By default, return only non-VIP prizes for regular wheel
+        query["is_vip"] = False
+    
+    prizes = await db.prizes.find(query, {"_id": 0}).to_list(1000)
     return prizes
 
 @api_router.post("/admin/prizes", response_model=Prize)
