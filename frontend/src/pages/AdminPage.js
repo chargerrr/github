@@ -613,6 +613,58 @@ const AdminPage = ({ user, logout }) => {
           </div>
         </TabsContent>
 
+        {/* VIP Prizes Tab */}
+        <TabsContent value="vip-prizes" data-testid="vip-prizes-content">
+          <div className="mb-4 flex gap-4">
+            <Button
+              data-testid="add-vip-prize-btn"
+              onClick={() => {
+                setPrizeForm({ ...prizeForm, is_vip: true });
+                setShowPrizeModal(true);
+              }}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold"
+            >
+              <Plus className="mr-2" size={18} /> Yeni VIP Ödül Ekle
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {vipPrizes.map((prize, index) => (
+              <Card key={prize.id} className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-purple-400/50" data-testid={`vip-prize-card-${index}`}>
+                <CardHeader>
+                  <CardTitle className="text-purple-300 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <Trophy size={20} className="text-yellow-400" />
+                      <span>{prize.name}</span>
+                    </div>
+                    <Button
+                      data-testid={`delete-vip-prize-${index}`}
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDeletePrize(prize.id)}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white space-y-2">
+                  <p>{prize.description}</p>
+                  <p className="text-sm text-purple-300">Ağırlık: {prize.weight}</p>
+                  <p className="text-sm text-purple-300">Site: {sites.find((s) => s.id === prize.site_id)?.name}</p>
+                  <div className="mt-2 inline-block bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1 rounded-full text-xs font-bold">
+                    VIP ÖDÜL
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          {vipPrizes.length === 0 && (
+            <div className="text-center py-10 text-gray-400">
+              <Trophy size={48} className="mx-auto mb-4 opacity-50" />
+              <p>Henüz VIP ödül eklenmemiş</p>
+            </div>
+          )}
+        </TabsContent>
+
         {/* Sites Tab */}
         <TabsContent value="sites" data-testid="sites-content">
           <div className="mb-4">
