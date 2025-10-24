@@ -135,7 +135,7 @@ const AdminPage = ({ user, logout }) => {
       });
       toast.success("Ödül oluşturuldu!");
       setShowPrizeModal(false);
-      setPrizeForm({ name: "", site_id: "", description: "", image_url: "", weight: 1 });
+      setPrizeForm({ name: "", site_id: "", description: "", image_url: "", weight: 1, is_vip: false });
       fetchData();
     } catch (error) {
       toast.error("Ödül oluşturulamadı");
