@@ -131,6 +131,7 @@ class Prize(BaseModel):
     description: str
     image_url: Optional[str] = None
     weight: int = 1  # probability weight
+    is_vip: bool = False  # VIP prize
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class PrizeCreate(BaseModel):
@@ -139,6 +140,31 @@ class PrizeCreate(BaseModel):
     description: str
     image_url: Optional[str] = None
     weight: int = 1
+    is_vip: bool = False
+
+class VIPCondition(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    site_id: str  # Hangi site için
+    condition_type: str  # "registration", "deposit", "bet"
+    condition_value: str  # Koşul değeri (örn: "100 TL yatırım")
+    description: str  # Açıklama
+    spins_granted: int = 1  # Kaç VIP çark hakkı verilecek
+    is_active: bool = True
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class VIPConditionCreate(BaseModel):
+    site_id: str
+    condition_type: str
+    condition_value: str
+    description: str
+    spins_granted: int = 1
+    is_active: bool = True
+
+class VIPSpinGrant(BaseModel):
+    user_id: str
+    condition_id: str
+    proof: Optional[str] = None  # Kanıt (ekran görüntüsü URL, vb.)
 
 class WheelSpin(BaseModel):
     model_config = ConfigDict(extra="ignore")
