@@ -863,6 +863,81 @@ const AdminPage = ({ user, logout }) => {
           </div>
         </TabsContent>
 
+        {/* VIP Users Tab */}
+        <TabsContent value="vip-users" data-testid="vip-users-content">
+          <div className="mb-4">
+            <Button
+              data-testid="grant-vip-spin-btn"
+              onClick={() => setShowVipSpinGrantModal(true)}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold"
+            >
+              <Plus className="mr-2" size={18} /> VIP Çevirme Hakkı Ver
+            </Button>
+          </div>
+
+          {/* VIP Stats */}
+          <Card className="mb-6 bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-purple-400/50">
+            <CardHeader>
+              <CardTitle className="text-purple-300 flex items-center gap-2">
+                <Trophy size={24} className="text-yellow-400" />
+                VIP İstatistikleri
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="bg-gray-700/50 p-4 rounded-lg">
+                  <p className="text-3xl font-bold text-purple-300">{vipStats.users_with_vip_spins || 0}</p>
+                  <p className="text-gray-400 text-sm">VIP Kullanıcılar</p>
+                </div>
+                <div className="bg-gray-700/50 p-4 rounded-lg">
+                  <p className="text-3xl font-bold text-purple-300">{vipStats.total_vip_spins_available || 0}</p>
+                  <p className="text-gray-400 text-sm">Toplam VIP Hak</p>
+                </div>
+                <div className="bg-gray-700/50 p-4 rounded-lg">
+                  <p className="text-3xl font-bold text-purple-300">{vipStats.active_vip_conditions || 0}</p>
+                  <p className="text-gray-400 text-sm">Aktif Koşullar</p>
+                </div>
+                <div className="bg-gray-700/50 p-4 rounded-lg">
+                  <p className="text-3xl font-bold text-purple-300">{vipStats.vip_prizes || 0}</p>
+                  <p className="text-gray-400 text-sm">VIP Ödüller</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* VIP Users List */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {vipUsers.map((u, index) => (
+              <Card key={u.id} className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-purple-400/50" data-testid={`vip-user-card-${index}`}>
+                <CardHeader>
+                  <CardTitle className="text-purple-300 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <Star size={20} className="text-yellow-400" />
+                      <span>{u.name} {u.surname}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-purple-600/30 px-3 py-1 rounded-full">
+                      <Trophy size={16} className="text-yellow-400" />
+                      <span className="text-sm font-bold">{u.vip_spins}</span>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white space-y-1">
+                  <p><strong>Email:</strong> {u.email}</p>
+                  <p><strong>Telefon:</strong> {u.phone}</p>
+                  <p><strong>Telegram:</strong> {u.telegram_username}</p>
+                  <p className="text-purple-300 font-semibold mt-2">VIP Çark Hakkı: {u.vip_spins}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          {vipUsers.length === 0 && (
+            <div className="text-center py-10 text-gray-400">
+              <Star size={48} className="mx-auto mb-4 opacity-50" />
+              <p>Henüz VIP çevirme hakkı olan kullanıcı yok</p>
+            </div>
+          )}
+        </TabsContent>
+
         {/* Database Tab */}
         <TabsContent value="database" data-testid="database-content">
           <div className="space-y-6">
