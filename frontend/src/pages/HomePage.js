@@ -21,13 +21,19 @@ const HomePage = ({ user, setUser, logout }) => {
   const [showSiteModal, setShowSiteModal] = useState(false);
   const [siteUsername, setSiteUsername] = useState("");
   const [prizes, setPrizes] = useState([]);
+  const [vipPrizes, setVipPrizes] = useState([]);
   const [sites, setSites] = useState([]);
   const [rules, setRules] = useState([]);
   const [mySpins, setMySpins] = useState([]);
   const [recentWinners, setRecentWinners] = useState([]);
   const [settings, setSettings] = useState({});
+  const [activeWheel, setActiveWheel] = useState("normal"); // "normal" or "vip"
+  const [vipSpinning, setVipSpinning] = useState(false);
+  const [vipWonPrize, setVipWonPrize] = useState(null);
   const wheelRef = useRef(null);
   const canvasRef = useRef(null);
+  const vipWheelRef = useRef(null);
+  const vipCanvasRef = useRef(null);
   const audioRef = useRef(null);
 
   const [formData, setFormData] = useState({
