@@ -638,9 +638,171 @@ async def get_database_stats(admin: User = Depends(get_admin_user)):
         "sites": await db.sites.count_documents({}),
         "prizes": await db.prizes.count_documents({}),
         "spins": await db.spins.count_documents({}),
-        "rules": await db.rules.count_documents({})
+        "rules": await db.rules.count_documents({}),
+        "vip_conditions": await db.vip_conditions.count_documents({})
     }
     return stats
+
+# VIP System endpoints
+@api_router.get("/vip-conditions")
+async def get_vip_conditions():
+    """Get all active VIP conditions"""
+    conditions = await db.vip_conditions.find({"is_active": True}, {"_id": 0}).to_list(1000)
+    
+    # Populate site info
+    result = []
+    for cond in conditions:
+        site = await db.sites.find_one({"id": cond["site_id"]}, {"_id": 0})
+        result.append({
+            **cond,
+            "site": site
+        })
+    
+    return result
+
+@api_router.get("/admin/vip-conditions")
+async def get_all_vip_conditions(admin: User = Depends(get_admin_user)):
+    """Get all VIP conditions (including inactive)"""
+    conditions = await db.vip_conditions.find({}, {"_id": 0}).to_list(1000)
+    
+    # Populate site info
+    result = []
+    for cond in conditions:
+        site = await db.sites.find_one({"id": cond["site_id"]}, {"_id": 0})
+        result.append({
+            **cond,
+            "site": site
+        })
+    
+    return result
+
+@api_router.post("/admin/vip-conditions", response_model=VIPCondition)
+async def create_vip_condition(condition_data: VIPConditionCreate, admin: User = Depends(get_admin_user)):
+    """Create a new VIP condition"""
+    condition = VIPCondition(**condition_data.model_dump())
+    await db.vip_conditions.insert_one(condition.model_dump())
+    return condition
+
+@api_router.patch("/admin/vip-conditions/{condition_id}")
+async def update_vip_condition(condition_id: str, condition_data: VIPConditionCreate, admin: User = Depends(get_admin_user)):
+    """Update a VIP condition"""
+    await db.vip_conditions.update_one(
+        {"id": condition_id},
+        {"$set": condition_data.model_dump()}
+    )
+    return {"message": "VIP condition updated"}
+
+@api_router.delete("/admin/vip-conditions/{condition_id}")
+async def delete_vip_condition(condition_id: str, admin: User = Depends(get_admin_user)):
+    """Delete a VIP condition"""
+    await db.vip_conditions.delete_many({"id": condition_id})
+    return {"message": "VIP condition deleted"}
+
+@api_router.post("/admin/grant-vip-spins")
+async def grant_vip_spins(grant_data: VIPSpinGrant, admin: User = Depends(get_admin_user)):
+    """Manually grant VIP spins to a user based on a condition"""
+    # Get the condition
+    condition = await db.vip_conditions.find_one({"id": grant_data.condition_id}, {"_id": 0})
+    if not condition:
+        raise HTTPException(status_code=404, detail="VIP condition not found")
+    
+    # Grant spins to user
+    await db.users.update_one(
+        {"id": grant_data.user_id},
+        {"$inc": {"vip_spins": condition["spins_granted"]}}
+    )
+    
+    # Log the grant (optional, for tracking)
+    grant_log = {
+        "id": str(uuid.uuid4()),
+        "user_id": grant_data.user_id,
+        "condition_id": grant_data.condition_id,
+        "spins_granted": condition["spins_granted"],
+        "proof": grant_data.proof,
+        "granted_by": admin.id,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.vip_grants.insert_one(grant_log)
+    
+    return {"message": f"Granted {condition['spins_granted']} VIP spins to user", "spins_granted": condition["spins_granted"]}
+
+@api_router.get("/admin/vip-users")
+async def get_vip_users(admin: User = Depends(get_admin_user)):
+    """Get all users with VIP spins"""
+    users = await db.users.find(
+        {"vip_spins": {"$gt": 0}},
+        {"_id": 0, "password_hash": 0}
+    ).to_list(1000)
+    
+    return users
+
+@api_router.get("/admin/vip-stats")
+async def get_vip_stats(admin: User = Depends(get_admin_user)):
+    """Get VIP system statistics"""
+    stats = {
+        "total_vip_conditions": await db.vip_conditions.count_documents({}),
+        "active_vip_conditions": await db.vip_conditions.count_documents({"is_active": True}),
+        "users_with_vip_spins": await db.users.count_documents({"vip_spins": {"$gt": 0}}),
+        "total_vip_grants": await db.vip_grants.count_documents({}),
+        "vip_prizes": await db.prizes.count_documents({"is_vip": True}),
+        "total_vip_spins_available": sum([u.get("vip_spins", 0) for u in await db.users.find({}, {"_id": 0, "vip_spins": 1}).to_list(10000)])
+    }
+    
+    return stats
+
+@api_router.get("/vip-prizes")
+async def get_vip_prizes():
+    """Get all VIP prizes"""
+    prizes = await db.prizes.find({"is_vip": True}, {"_id": 0}).to_list(1000)
+    return prizes
+
+@api_router.post("/wheel/vip-spin-preview", response_model=SpinPreviewResponse)
+async def vip_spin_preview(current_user: User = Depends(get_current_user)):
+    """VIP wheel spin - first step"""
+    # Check if user has VIP spins
+    if current_user.vip_spins <= 0:
+        raise HTTPException(status_code=400, detail="No VIP spins available")
+    
+    # Deduct VIP spin
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$inc": {"vip_spins": -1}}
+    )
+    
+    # Get all VIP prizes with weights
+    vip_prizes = await db.prizes.find({"is_vip": True}, {"_id": 0}).to_list(1000)
+    if not vip_prizes:
+        raise HTTPException(status_code=400, detail="No VIP prizes available")
+    
+    # Weighted random selection
+    total_weight = sum(p["weight"] for p in vip_prizes)
+    rand = random.uniform(0, total_weight)
+    cumulative = 0
+    selected_prize = None
+    
+    for prize in vip_prizes:
+        cumulative += prize["weight"]
+        if rand <= cumulative:
+            selected_prize = Prize(**prize)
+            break
+    
+    if not selected_prize:
+        selected_prize = Prize(**vip_prizes[0])
+    
+    # Get site info
+    site = await db.sites.find_one({"id": selected_prize.site_id}, {"_id": 0})
+    if not site:
+        raise HTTPException(status_code=400, detail="Site not found")
+    
+    # Create temporary spin record
+    spin = WheelSpin(
+        user_id=current_user.id,
+        prize_id=selected_prize.id,
+        site_username=""  # Will be filled in confirm step
+    )
+    await db.spins.insert_one(spin.model_dump())
+    
+    return SpinPreviewResponse(spin=spin, prize=selected_prize, site=Site(**site))
 
 app.include_router(api_router)
 
