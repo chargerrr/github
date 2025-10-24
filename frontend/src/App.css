@@ -37,7 +37,8 @@ h1, h2, h3 {
               0 0 80px rgba(255, 215, 0, 0.3),
               inset 0 0 40px rgba(255, 215, 0, 0.2);
   border: 8px solid #FFD700;
-  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+  /* Removed transition from here - will be set dynamically via JS */
+  transform-origin: center center;
 }
 
 .wheel canvas {
@@ -47,7 +48,7 @@ h1, h2, h3 {
 }
 
 .wheel.spinning {
-  animation: sparkle 0.1s infinite alternate;
+  animation: sparkle 0.1s infinite alternate, pulse 0.5s ease-in-out infinite;
 }
 
 @keyframes sparkle {
@@ -60,6 +61,15 @@ h1, h2, h3 {
     box-shadow: 0 0 60px rgba(255, 215, 0, 0.8),
                 0 0 120px rgba(255, 215, 0, 0.5),
                 inset 0 0 60px rgba(255, 215, 0, 0.4);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
   }
 }
 
