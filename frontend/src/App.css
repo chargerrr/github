@@ -48,7 +48,8 @@ h1, h2, h3 {
 }
 
 .wheel.spinning {
-  animation: sparkle 0.1s infinite alternate, pulse 0.5s ease-in-out infinite;
+  animation: sparkle 0.1s infinite alternate;
+  /* Removed pulse animation - it was conflicting with JS rotate transform */
 }
 
 @keyframes sparkle {
