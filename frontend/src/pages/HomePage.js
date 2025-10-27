@@ -409,20 +409,43 @@ const HomePage = ({ user, setUser, logout }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 relative overflow-hidden">
       <Helmet>
-        <title>{settings.site_title || "Kazandıran Çark"}</title>
-        <meta name="description" content={settings.meta_description || "Şansınızı deneyin ve büyük ödüller kazanın!"} />
-        <meta name="keywords" content={settings.meta_keywords || "çark, ödül, bahis, bonus"} />
+        <title>ÇARK ÇEVİRME SİTESİ - Ücretsiz Ödül Kazan</title>
+        <meta name="description" content="Her gün ücretsiz çark çevir, büyük ödüller kazan! VIP çark sistemi ile daha büyük kazançlar. TRX, TL bonus ve daha fazlası." />
+        <meta name="keywords" content="çark çevirme, ücretsiz çark, online çark oyunu, ödül kazandıran çark, VIP çark, bahis sitesi çark, günlük ödül çarkı" />
+        
+        {/* Yandex için özel meta taglar */}
+        <meta property="ya:ovs:upload_date" content={new Date().toISOString()} />
+        <meta property="article:published_time" content="2025-01-01T00:00:00Z" />
+        <meta property="article:modified_time" content={new Date().toISOString()} />
         
         {/* Open Graph */}
-        <meta property="og:title" content={settings.site_title || "Kazandıran Çark"} />
-        <meta property="og:description" content={settings.meta_description || "Şansınızı deneyin ve büyük ödüller kazanın!"} />
+        <meta property="og:title" content="ÇARK ÇEVİRME SİTESİ - Ücretsiz Ödül Kazan" />
+        <meta property="og:description" content="Her gün ücretsiz çark çevir, büyük ödüller kazan!" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={window.location.href} />
         
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={settings.site_title || "Kazandıran Çark"} />
-        <meta name="twitter:description" content={settings.meta_description || "Şansınızı deneyin ve büyük ödüller kazanın!"} />
+        {/* Schema.org JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Kazandıran Çark",
+            "description": "Her gün ücretsiz çark çevirme oyunu. Büyük ödüller kazan!",
+            "applicationCategory": "Game",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "TRY"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "ratingCount": "1250"
+            },
+            "datePublished": "2025-01-01",
+            "dateModified": new Date().toISOString().split('T')[0]
+          })}
+        </script>
       </Helmet>
       
       {/* Animated background stars */}
