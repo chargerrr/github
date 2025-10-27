@@ -486,8 +486,11 @@ const HomePage = ({ user, setUser, logout }) => {
       {/* Main content */}
       <main className="relative z-10 flex flex-col items-center justify-center px-4 py-12">
         <div className="mb-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" data-testid="main-heading">
-            Şansını Dene, Büyük Ödüller Kazan!
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4" data-testid="main-heading">
+            ŞANSINI DENE, BÜYÜK ÖDÜLLER KAZAN! 🎰
+          </h1>
+          <h2 className="text-xl md:text-2xl font-semibold text-yellow-400 mb-2">
+            HER GÜN ÜCRETSİZ ÇARK ÇEVİRME HAKKI
           </h2>
           <p className="text-lg text-gray-300 mb-4" data-testid="sub-heading">
             {user
