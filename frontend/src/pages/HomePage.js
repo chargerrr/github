@@ -349,6 +349,14 @@ const HomePage = ({ user, setUser, logout }) => {
     const degrees = rotations * 360 + extraDegrees;
     
     if (vipWheelRef.current) {
+      // Reset first
+      vipWheelRef.current.style.transition = 'none';
+      vipWheelRef.current.style.transform = 'rotate(0deg)';
+      
+      // Force reflow
+      void vipWheelRef.current.offsetHeight;
+      
+      // Apply spinning
       vipWheelRef.current.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.3, 0.99)';
       vipWheelRef.current.style.transform = `rotate(${degrees}deg)`;
     }
@@ -381,7 +389,7 @@ const HomePage = ({ user, setUser, logout }) => {
     } catch (error) {
       setVipSpinning(false);
       if (vipWheelRef.current) {
-        vipWheelRef.current.style.transition = '';
+        vipWheelRef.current.style.transition = 'none';
         vipWheelRef.current.style.transform = 'rotate(0deg)';
       }
       toast.error(error.response?.data?.detail || "VIP çark çevrilemedi");
