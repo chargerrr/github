@@ -283,6 +283,14 @@ const HomePage = ({ user, setUser, logout }) => {
     const degrees = rotations * 360 + extraDegrees;
     
     if (wheelRef.current) {
+      // Reset first
+      wheelRef.current.style.transition = 'none';
+      wheelRef.current.style.transform = 'rotate(0deg)';
+      
+      // Force reflow
+      void wheelRef.current.offsetHeight;
+      
+      // Apply spinning
       wheelRef.current.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.3, 0.99)';
       wheelRef.current.style.transform = `rotate(${degrees}deg)`;
     }
@@ -314,7 +322,7 @@ const HomePage = ({ user, setUser, logout }) => {
     } catch (error) {
       setSpinning(false);
       if (wheelRef.current) {
-        wheelRef.current.style.transition = '';
+        wheelRef.current.style.transition = 'none';
         wheelRef.current.style.transform = 'rotate(0deg)';
       }
       toast.error(error.response?.data?.detail || "Çark çevrilemedi");
